@@ -1,0 +1,57 @@
+html {
+	position:relative;
+	margin:0;
+	padding:0;
+	height:100%;
+}
+body {
+	font-size:13px;
+	margin:auto;
+	/*height:100%;*/
+	overflow-x: hidden;
+	/*color:#666666;*/
+	-webkit-user-select:none;
+	display:box;
+	font-family: Arial;
+	-webkit-touch-callout:none;
+	-webkit-box-orient:vertical;
+	-webkit-box-align:stretch;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+#container>li, body{background-color:#f0f0f0}
+
+article{width: 100%;}
+a{text-decoration: none; color:#ccc}
+
+ 
+header {
+	margin-bottom: 5px;
+	-webkit-box-shadow: 0px 0px 6px 1px #aaa;
+	height: 44px;
+	line-height: 44px;
+	background: #fff;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+}
+
+footer {
+	margin-bottom: 5px;
+	-webkit-box-shadow: 0px 0px 6px 1px #aaa;
+	height: 44px;
+	line-height: 44px;
+	background: #fff;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+
+    .mui-table h4,.mui-table h5,.mui-table .mui-h5,.mui-table .mui-h6,.mui-table p{
+        margin-top: 0;
+    }
+    .mui-table h4{
+        line-height: 21px;
+        font-weight: 500;
+    }
+    .template{
+    	display: none;
+    }
