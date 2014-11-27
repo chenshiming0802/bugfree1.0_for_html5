@@ -2,21 +2,38 @@
 	"use strict";
 	 
 	var page = function (){};
-	T.extend(page.prototype, B, {
-		onCreate:function(){  
-			console.log("testpage#onCreate");
-			//plus.nativeUI.alert("natvie oncreate3"); 
+	T.extend(page.prototype,B,{
+		onCreate:function(){
+			var that = this , doc = document; 
+			//this.isAssignMe = this.currentView.isAssignMe||"0"; 
 		}, 
-		onResume:function(){  
-			console.log("testpage#onResume");
+		onResume:function(){    
+			var that = this , doc = document;
+			/*
+			T.getRemoteJsonByProxy("buginfos2.php",
+				{
+					"pageIndex":"1",
+					"pageSize":"20",
+					"isAssignMe":that.isAssignMe,
+					"isMeCreate":that.isMeCreate,
+					"queryString":that.queryString,
+				},
+				function(data){
+					var source = document.getElementById("template").innerHTML;
+					var template = Handlebars.compile(source);				 	
+					var result = template(data);  
+					document.getElementById("data_ul").innerHTML += result ;
+				}
+			);*/
+
 		}, 
 		onJs:function(){    
-			console.log("testpage#onJs");
-			//this.b_on("click",document.getElementById("hellobt"),this.test1);
-		}, 	 
-		test1:function(e){ 		
-			console.log("testpage#test1");
-		}
+		}, 
+		onPullRefresh:function(){
+		},
+		onPullLoadMore:function(){
+		}, 
+		 
 	});  
 	
 	window.page = new page();

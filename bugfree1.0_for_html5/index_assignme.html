@@ -34,7 +34,8 @@
  
 <script id="template" type="text/x-handlebars-template">
 	{{#datas}}
-        <li class="mui-table-view-cell" >
+ 
+        <li class="mui-table-view-cell"  bugId="{{bugId}}">       	
             <div class="mui-table">
                 <div class="mui-table-cell mui-col-xs-10">
                     <h4 class="mui-ellipsis">{{bugTitle}}</h4>
@@ -48,12 +49,14 @@
 					<span class="mui-h5">{{bugStatus}}</span>
 					<span class="mui-h5">{{assignedToRealUserName}}</span> 
                 </div>
-            </div>
+            </div>   
         </li>
+ 
     {{/datas}}
  </script>
    
 </body>
+<!--<script type="application/javascript" src="js/depend/mui.js"></script>-->
 <script type="application/javascript" src="js/depend/handlebars-v2.0.0.js"></script>
 <script type="application/javascript" src="js/base/base.js"></script>
 <script type="application/javascript" src="js/app/index_assignme.js"></script>

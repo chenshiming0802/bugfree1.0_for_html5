@@ -3,50 +3,71 @@
 	 
 	var page = function (){};
 	T.extend(page.prototype,B,{
-		extra:function(param){
-			this.param = [];
-			this.param.isAssignMe = "1";
-			this.param.isMeCreate = "0";
-			this.param.queryString = ""
-			
-			/*
-			if(param.isMeCreate || param.queryString){
-				param.isAssignMe = "1";
-			}*/
-			
-		},
-		onCreate:function(){ 
-			this.extra();
-			console.log("index_weixin#onCreate");
+		onCreate:function(){  
+			this.isAssignMe = this.currentView.isAssignMe||"0"; 
+			this.isMeCreate = this.currentView.isMeCreate||"0"; 
+			this.queryString = this.currentView.queryString||"";
+ 			
+ 			/*
+			mui.init({
+			  gestureConfig:{
+			   tap: true, //默认为true
+			   doubletap: true, //默认为false
+			   longtap: true, //默认为false
+			   swipe: true, //默认为true
+			   drag: true //默认为true
+			  }
+			});
+			*/
 		}, 
-		onResume:function(){  
-			console.log("index_weixin#onResume");
-			var that = this;
+		onResume:function(){    
+			var that = this , doc = document;
 			T.getRemoteJsonByProxy("buginfos2.php",
 				{
 					"pageIndex":"1",
-					"pageSize":"20",
-					"isAssignMe":that.param.isAssignMe,
-					"isMeCreate":that.param.isMeCreate,
-					"queryString":that.param.queryString,
+					"pageSize":"10",
+					"isAssignMe":that.isAssignMe,
+					"isMeCreate":that.isMeCreate,
+					"queryString":that.queryString,
 				},
 				function(data){
-					var source = document.getElementById("template").innerHTML;
+					var source = doc.getElementById("template").innerHTML;
 					var template = Handlebars.compile(source);				 	
 					var result = template(data);  
-					document.getElementById("data_ul").innerHTML += result ;
+					doc.getElementById("data_ul").innerHTML += result ;
 				}
 			);
 
 		}, 
 		onJs:function(){    
-			console.log("index_weixin#onJs");
+			var that = this , doc = document;
+			var ul = doc.getElementById("data_ul");
+			
+			var sView = that.createView("service.html","service",{},{bodyUrl:"service_body.html",bugId:"000100"});	
+			T.on("click",ul,function(e){
+				var article = T.getParentArticle(e.target,"LI");
+				var bugId = article.getAttribute("bugId");
+				console.log("  assign click:"+bugId);
+				
+				sView.show('slide-in-right', 100);	
+				that.resumeView(sView);
+			}); 
+			/*
+			T.on("touchstart",ul,function(e){
+				if(that.touchElement){
+					T.removeClass(that.touchElement,"gc_b2");
+				}				
+				var article = T.getParentArticle(e.target,"LI");
+				T.addClass(article,"gc_b2");
+				that.touchElement = article;
+			});*/
+ 
 		}, 
+ 
+
 		onPullRefresh:function(){
- 			alert("onPullRefresh");	
 		},
 		onPullLoadMore:function(){
-			alert("onPullLoadMore");
 		}, 
 		 
 	});  

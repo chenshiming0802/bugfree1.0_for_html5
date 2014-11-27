@@ -1,8 +1,33 @@
 /* Page的基类，理论上非不得已的情况下都放在tools下 */
 (function(){
 	"use strict"
-
-	window.base =  {  
+	/*此方法并非真正的继承*/
+	window.base =  {
+		_newView:[],/*本窗口创建的view，在返回是需要关闭*/
+		/*初始化base的内容*/
+		baseinit:function(){
+			var that = this;
+		},
+		/*创建view，如果存在则直接返回*/
+		createView:function(fileName,viewName,style,param){
+			var that = this;
+			var view = plus.webview.getWebviewById(viewName);
+			if(!view){
+				view = plus.webview.create(fileName,viewName,style,param);
+				that._newView.push(view);
+			}
+ 		 		console.log("  create==");
+ 		 		console.log(that._newView);			
+			return view;
+		},
+		/*画面create后，需要调用resume才会显示数据*/ 
+		resume:function(){
+			var that = this; 
+			that.currentView.evalJS("window.startup.onResume();");	
+		},
+		resumeView:function(view){
+			view.evalJS("window.startup.onResume();");		
+		},
 		/*给子窗口继承，父窗口调用*/
 	 	setPullLoadMore:function(weixin){
 			weixin.evalJS("document.addEventListener('plusscrollbottom',function(){page.onPullLoadMore()});");	
@@ -10,7 +35,7 @@
 	 	/*给父窗口继承，父窗口调用*/
 		setPullRefresh:function(weixin){
 			var that = this;
-			weixin.setBounce({position:{top:"20px"},changeoffset:{top:"48px"}});	 
+			weixin.setBounce({position:{top:"50%"},changeoffset:{top:"48px"}});	 
 			var etext = document.getElementById("text"),
 				eicon = document.getElementById("icon");			 
 			weixin.addEventListener("dragBounce",function(e){
@@ -80,9 +105,11 @@
 			}
 			for(; index < len; index++){
 				var o = arguments[index];
-				for(var i in o) 
+				console.log(o);
+				for(var i in o)
 					if(o[i] !== undefined) 
 						first[i] = o[i];
+						
 			}
 			return first; 
 		},	
@@ -256,7 +283,48 @@
 			xhr.send(postData);
 			console.log("post "+u);
 			console.log("   data:"+postData)
-		}
+		},
+		isIOS : function() {
+			return navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i);
+		},
+		isAndroid : function(t) {
+			return navigator.userAgent.match(/Android/i);
+		},
+		/**
+		 * 增加点击后的UI显示效果
+		 * @param {Object} obj
+		 * @param {Object} className
+		 *//*
+	    pressDisplay:function(element,className){
+	    	console.log('---');
+	    	console.log(element);
+			var that = window.tools;
+	        className = className||"gc_b2";
+	        that.on("touchstart",element,function(e){
+	        	that.addClass(element,className);
+	        });
+	        that.on("touchend",element,function(e){ 
+	            that.removeClass(element,className);
+	        }); 
+	    },*/
+		/**
+		 * 获取父组织的article节点
+		 * @param {Object} element
+		 * @param {Object} tagName 默认ARTICLE
+		 */
+		getParentArticle:function (element,tagName){
+			tagName = tagName||"ARTICLE";
+			var a = null;
+			for(var i=0,j=8;i<j;i++){
+				a = element.parentNode;
+				if(a.tagName==tagName){
+					return a;
+				}
+				element = a;
+			} 	
+			return null;	
+ 		},	     
+	    
 	};
 	
 })();

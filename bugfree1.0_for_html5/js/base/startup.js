@@ -9,18 +9,25 @@
  		 /*可继承 参照android activity#onCreate*/
  		 onCreate:function(){
  		 	console.log("startup#onCreate");
-  	
+ 		 	var that = this;
+ 		 	if(!page) return;
+ 		 	that.baseinit();
+ 		 	page.currentView = plus.webview.currentWebview();		 	
  		 	page.onCreate();
-			this.onResume();
+			//this.onResume(); 
  		 }, 
  		 /*可继承 参照android activity#onResume*/
  		 onResume:function(){ 
  		 	console.log("startup#onResume"); 	 
- 		 	
+ 		 	var that = this;
  		 	page.onResume();
- 		 	this.onJs();  
+ 		 	//延迟加载js绑定等动作，为更快的展现数据
+ 		 	setTimeout(function(){
+ 		 		that.onJs();  
+ 		 	},500);
+ 		 	
  		 },
- 		 /*可继承*/
+ 		 /*可继承 设置全局的JS，与onResume的数据无关*/
  		 onJs:function(){
  		 	console.log("startup#onJs"); 	 
  		 	page.onJs(); 
@@ -39,6 +46,20 @@
 				page.onNetchange();
 			}
  		 },
+ 		 /*可继承  android的关闭事件*/
+ 		 onAndroidBack:function(){
+ 		 	var that = this;
+ 		 	if(page.onAndroidBack){
+ 		 		page.onAndroidBack();
+ 		 	}else{
+ 		 		plus.webview.hide(page.currentView,'slide-out-right',100);
+ 		 		console.log("  close==");
+ 		 		console.log(that._newView);
+ 		 		for(var k in that._newView){
+ 		 			plus.webview.close( that._newView[k]);
+ 		 		} 		 		
+ 		 	}
+ 		 },
  		 /*可继承 下拉刷新*/
 		 onPullRefresh:function(){
  			console.log("startup#onPullRefresh");
@@ -50,7 +71,7 @@
  			page.onPullLoadMore();			
 		 },  		 
  		 handleEvent: function(e){ 	
- 		 	console.log("startup#handleEvent");
+ 		 	console.log("startup#handleEvent"); 
 		 }	
  	});  
  		
@@ -69,7 +90,9 @@
 	    document.addEventListener("pause", function(){
 	    	window.startup.onPause();  
 		});	
- 	
+ 		plus.key.addEventListener('backbutton', function(){
+ 			window.startup.onAndroidBack();  
+ 		});
  	}
     window.startup = new startup();
     if(window.plus){
@@ -83,6 +106,6 @@
 		startPage();
 		startPage = function(){};
 	});	 
-	
-	
+ 
+ 
 })(window.base,window.tools,window.page); 
