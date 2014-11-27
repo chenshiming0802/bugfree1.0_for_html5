@@ -1,7 +1,7 @@
 /* Page的基类，理论上非不得已的情况下都放在tools下 */
 (function(){
 	"use strict"
-	/*此方法并非真正的继承*/
+ 
 	window.base =  {
 		_newView:[],/*本窗口创建的view，在返回是需要关闭*/
 		/*初始化base的内容*/
@@ -21,12 +21,15 @@
 			return view;
 		},
 		/*画面create后，需要调用resume才会显示数据*/ 
-		resume:function(){
+		resume:function(extra){
 			var that = this; 
-			that.currentView.evalJS("window.startup.onResume();");	
+			extra = extra || {};
+			that.currentView.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");	 //TODO test
 		},
-		resumeView:function(view){
-			view.evalJS("window.startup.onResume();");		
+		resumeView:function(view,extra){
+			extra = extra || {};
+			console.log("window.startup.onResume("+JSON.stringify(extra)+");");
+			view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");		//TODO test
 		},
 		/*给子窗口继承，父窗口调用*/
 	 	setPullLoadMore:function(weixin){
@@ -105,7 +108,6 @@
 			}
 			for(; index < len; index++){
 				var o = arguments[index];
-				console.log(o);
 				for(var i in o)
 					if(o[i] !== undefined) 
 						first[i] = o[i];

@@ -13,8 +13,8 @@
  
 		}, 
 		/*需要先调用setBody*/
-		onResume:function(){   	
-			
+		onResume:function(extra){   	
+			console.log(extra);
 			var that = this;
 			//只获取外部传入的参数
 			var bodyParam = {};
@@ -27,9 +27,8 @@
 				}  
 			}	
 			var bodyView = that.createView(that.bodyUrl,"body",{top:"48px",bottom:"0px"},bodyParam)
-			//var bodyView = plus.webview.create(that.bodyUrl,"body",{top:"48px",bottom:"0px"},bodyParam);	
 			bodyView.show();
-			that.resumeView(bodyView);	
+			that.resumeView(bodyView,extra);	
 		},
 		onJs:function(){    
 		}, 		

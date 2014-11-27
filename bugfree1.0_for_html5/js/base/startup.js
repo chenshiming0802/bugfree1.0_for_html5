@@ -17,10 +17,11 @@
 			//this.onResume(); 
  		 }, 
  		 /*可继承 参照android activity#onResume*/
- 		 onResume:function(){ 
- 		 	console.log("startup#onResume"); 	 
+ 		 onResume:function(extra){ 
+ 		 	console.log("startup#onResume"); 
+ 		 	console.log(extra);
  		 	var that = this;
- 		 	page.onResume();
+ 		 	page.onResume(extra);
  		 	//延迟加载js绑定等动作，为更快的展现数据
  		 	setTimeout(function(){
  		 		that.onJs();  
@@ -52,9 +53,9 @@
  		 	if(page.onAndroidBack){
  		 		page.onAndroidBack();
  		 	}else{
+ 		 		/*当前窗口关闭，并且通过当前窗口开的窗口也关闭*/
  		 		plus.webview.hide(page.currentView,'slide-out-right',100);
- 		 		console.log("  close==");
- 		 		console.log(that._newView);
+
  		 		for(var k in that._newView){
  		 			plus.webview.close( that._newView[k]);
  		 		} 		 		

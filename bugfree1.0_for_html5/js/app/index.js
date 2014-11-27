@@ -11,9 +11,9 @@
 	 		that.cuNavItem = doc.getElementById("assignme");
 			that._loadPage("assignme",true);
 
-			that.resume();
+			that.resume([]);
 		},
-		onResume:function(){   
+		onResume:function(extra){   
 			console.log("index#onResume");
 		},  
 		onJs:function(){  

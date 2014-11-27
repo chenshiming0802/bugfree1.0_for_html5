@@ -7,7 +7,7 @@
 			var that = this , doc = document; 
 			//this.isAssignMe = this.currentView.isAssignMe||"0"; 
 		}, 
-		onResume:function(){    
+		onResume:function(extra){    
 			var that = this , doc = document;
 			/*
 			T.getRemoteJsonByProxy("buginfos2.php",

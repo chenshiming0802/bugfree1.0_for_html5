@@ -7,10 +7,10 @@
 			var that = this , doc = document;
 			
 		}, 
-		onResume:function(extra){    
+		onResume:function(extra){  
 			var that = this;
 			that.bugId = extra.bugId;
-
+			alert(that.bugId);
 			T.getRemoteJsonByProxy("buginfo2.php",
 				{
 					"bugId":that.bugId,
