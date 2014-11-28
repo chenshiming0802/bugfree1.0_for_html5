@@ -8,17 +8,6 @@
 			this.isMeCreate = this.currentView.isMeCreate||"0"; 
 			this.queryString = this.currentView.queryString||"";
  			
- 			/*
-			mui.init({
-			  gestureConfig:{
-			   tap: true, //默认为true
-			   doubletap: true, //默认为false
-			   longtap: true, //默认为false
-			   swipe: true, //默认为true
-			   drag: true //默认为true
-			  }
-			});
-			*/
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
@@ -51,7 +40,7 @@
 				
 				sView.show('slide-in-right', 100);	
 		 
-				that.resumeView(sView, {bugId:bugId}); //TODO test 
+				that.resumeView(sView, {bugId:bugId});  
 			});   
 			/*
 			T.on("touchstart",ul,function(e){

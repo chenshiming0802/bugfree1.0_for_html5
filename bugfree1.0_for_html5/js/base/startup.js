@@ -9,24 +9,26 @@
  		isPause:false,
  		resumeExtra:null,
  		 /*可继承 参照android activity#onCreate*/
- 		 onCreate:function(){
+ 		 onCreate:function(){ 
  		 	console.log("startup#onCreate");
  		 	var that = this;
  		 	if(!page) return;
  		 	that.baseinit();
- 		 	page.currentView = plus.webview.currentWebview();		 	
+ 		 	page.currentView = plus.webview.currentWebview();	
+ 		 	page.openerView = page.currentView.opener();//TODO test openerView==null
  		 	page.onCreate();
 			//this.onResume(); 
  		 }, 
  		 /*可继承 参照android activity#onResume*/
- 		 onResume:function(extra){ 
+ 		 onResume:function(extra,config){ 
  		 	console.log("startup#onResume"); 
  		 	var that = this;
+ 		 	
  		 	/*如果是pause后再resume，则数据缓存中*/
  		 	if(that.isPause===true){
  		 		extra = that.resumeExtra;
  		 		that.isPause = false;
- 		 	}//TODO Test
+ 		 	}
  		 	that.resumeExtra = extra;
  		 	page.onResume(extra);
  		 	//延迟加载js绑定等动作，为更快的展现数据

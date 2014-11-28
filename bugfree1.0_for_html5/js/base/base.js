@@ -14,22 +14,20 @@
 			var view = plus.webview.getWebviewById(viewName);
 			if(!view){
 				view = plus.webview.create(fileName,viewName,style,param);
-				that._newView.push(view);
-			}
- 		 		console.log("  create==");
- 		 		console.log(that._newView);			
+				that._newView.push(view);//记录开的缓存，以备关闭
+			}		
 			return view;
 		},
 		/*画面create后，需要调用resume才会显示数据*/ 
 		resume:function(extra){
 			var that = this; 
 			extra = extra || {};
-			that.currentView.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");	 //TODO test
+			that.currentView.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");	 // 
 		},
 		resumeView:function(view,extra){
 			extra = extra || {};
 			console.log("window.startup.onResume("+JSON.stringify(extra)+");");
-			view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");		//TODO test
+			view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");		 
 		},
 		/*给子窗口继承，父窗口调用*/
 	 	setPullLoadMore:function(weixin){
