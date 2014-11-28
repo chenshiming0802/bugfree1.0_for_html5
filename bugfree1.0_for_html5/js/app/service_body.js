@@ -40,8 +40,6 @@
 		/*子窗口的返回事件传递给父窗口*/
 		onAndroidBack:function(){
 			var that = this;
-			console.log(" body#onAndroidBack");
-			console.log(that);
 			that.currentView.opener().evalJS("startup.onAndroidBack();");
 		},
 		onPullRefresh:function(){

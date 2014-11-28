@@ -26,8 +26,9 @@
 		},
 		resumeView:function(view,extra){
 			extra = extra || {};
-			console.log("window.startup.onResume("+JSON.stringify(extra)+");");
-			view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");		 
+			var extrastring = JSON.stringify(extra);
+			tools.l("resume("+extrastring+");");
+			view.evalJS("window.startup.onResume("+extrastring+");");		 
 		},
 		/*给子窗口继承，父窗口调用*/
 	 	setPullLoadMore:function(weixin){
@@ -95,13 +96,19 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 (function(){
 	"use strict"
 
-	window.tools =  {  
+	window.tools =  {
+		/**
+		 * 打印日志
+		 */
+		l:function(str){
+			console.log("["+plus.webview.currentWebview().id+"] "+ str);
+		},//TODO test log
 		/**
 		 * 实现类继承
 		 * 摘自与csdn.js
 		 * @param {Object} target
 		 */
-		extend: function(target){
+		extend: function(target){ 
 			var len = arguments.length,
 				index = 1,
 				first = arguments[0];
@@ -263,7 +270,7 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			xhr.onreadystatechange=function(){
 				if(xhr.readyState == 4){
 					if ( xhr.status == 200 ) {				
-						console.log("  return="+xhr.responseText); 
+						tools.l("  return="+xhr.responseText); 
 						var str = xhr.responseText;
 						//alert(str);
 						var data = [];
@@ -289,8 +296,8 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			xhr.setRequestHeader("ucore1","ADE1C062E16EAB4AACA11F7F89053FFD");			
 			// xhr.send("pageIndex=1&pageSize=20 ");//
 			xhr.send(postData);
-			console.log("post "+u);
-			console.log("   data:"+postData)
+			tools.l("post "+u);
+			tools.l("   data:"+postData)
 		},
 		isIOS : function() {
 			return navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i);

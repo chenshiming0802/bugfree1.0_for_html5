@@ -10,25 +10,25 @@
  		resumeExtra:null,
  		 /*可继承 参照android activity#onCreate*/
  		 onCreate:function(){ 
- 		 	console.log("startup#onCreate");
+ 		 	T.l("onCreate");
  		 	var that = this;
- 		 	if(!page) return;
+ 		 	if(!page) return; 
  		 	that.baseinit();
- 		 	page.currentView = plus.webview.currentWebview();	
+ 		 	page.currentView = plus.webview.currentWebview();	 
  		 	page.openerView = page.currentView.opener();//TODO test openerView==null
  		 	page.onCreate();
 			//this.onResume(); 
  		 }, 
  		 /*可继承 参照android activity#onResume*/
  		 onResume:function(extra,config){ 
- 		 	console.log("startup#onResume"); 
+ 		 	T.l("onResume");
  		 	var that = this;
  		 	
  		 	/*如果是pause后再resume，则数据缓存中*/
- 		 	if(that.isPause===true){
+ 		 	if(that.isPause===true){ 
  		 		extra = that.resumeExtra;
  		 		that.isPause = false;
- 		 	}
+ 		 	}  
  		 	that.resumeExtra = extra;
  		 	page.onResume(extra);
  		 	//延迟加载js绑定等动作，为更快的展现数据
@@ -39,21 +39,21 @@
  		 },
  		 /*可继承 设置全局的JS，与onResume的数据无关*/
  		 onJs:function(){
- 		 	console.log("startup#onJs"); 	 
+ 		 	T.l("onJs");
  		 	page.onJs(); 
  		 },
  		 /*可继承 参照android activity#onPause*/
  		 onPause:function(){
+ 		 	T.l("onPause");	 
  		 	var that = this;
- 		 	that.isPause = true;
- 		 	console.log("startup#onPause"); 	 
+ 		 	that.isPause = true; 
 			if(page.onPause){
 				page.onPause();
 			}
  		 },
  		 /*可继承 网络环境变化后触发*/
  		 onNetchange:function(){
- 		 	console.log("startup#onNetchange");
+ 		 	T.l("onNetchange");	 
 			if(page.onNetchange){
 				page.onNetchange();
 			}
@@ -74,16 +74,16 @@
  		 },
  		 /*可继承 下拉刷新*/
 		 onPullRefresh:function(){
- 			console.log("startup#onPullRefresh");
+ 			T.l("onPullRefresh");	 
  			page.onPullRefresh();
 		 },
 		 /*可继承 上拉读取更多*/
 		 onPullLoadMore:function(){
- 			console.log("startup#onPullLoadMore");
+ 			T.l("onPullLoadMore");	 
  			page.onPullLoadMore();			
 		 },  		 
  		 handleEvent: function(e){ 	
- 		 	console.log("startup#handleEvent"); 
+ 		 	T.l("handleEvent");	 
 		 }	
  	});  
  		
@@ -103,18 +103,21 @@
 	    	window.startup.onPause();  
 		});	
  		plus.key.addEventListener('backbutton', function(){
- 			window.startup.onAndroidBack();  
+ 			window.startup.onAndroidBack();    
  		});
  	}
+ 	if(window.startup){
+ 		console.log("window.startup exists");
+ 		return;
+ 	}
+ 	
     window.startup = new startup();
     if(window.plus){
-    	console.log("window.plus");
     	startPage();
     	startPage = function(){};
     	return;
     }
     document.addEventListener("plusready", function(){
-    	console.log("window.plusready ready");
 		startPage();
 		startPage = function(){};
 	});	 

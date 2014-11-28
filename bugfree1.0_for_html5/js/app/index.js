@@ -14,7 +14,7 @@
 			that.resume([]);
 		},
 		onResume:function(extra){   
-			console.log("index#onResume");
+			
 		},  
 		onJs:function(){  
 			var that = this , doc = document;
@@ -47,7 +47,7 @@
 						var pageName = "assignme";
 						var extra = {isAssignMe:"1"};
 						
-						bodyView = plus.webview.create("index_"+pageName+".html",id,sty,extra);
+						bodyView = that.createView("index_"+pageName+".html",id,sty,extra);
 						
 						this.setPullRefresh(bodyView);//支持下拉刷新
 						this.setPullLoadMore(bodyView);//支持上拉读取更多	

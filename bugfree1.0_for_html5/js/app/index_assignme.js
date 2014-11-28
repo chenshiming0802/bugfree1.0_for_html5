@@ -31,12 +31,12 @@
 		onJs:function(){    
 			var that = this , doc = document;
 			var ul = doc.getElementById("data_ul");
-			
-			var sView = that.createView("service.html","service",{},{bodyUrl:"service_body.html"});	
+			var sty = {top:"48px",bottom:"48px"};
+			var sView = that.createView("service.html","service",sty,{bodyUrl:"service_body.html"});	
 			T.on("click",ul,function(e){
 				var article = T.getParentArticle(e.target,"LI");
 				var bugId = article.getAttribute("bugId");
-				console.log("  assign click:"+bugId);
+				T.l("  assign click:"+bugId);
 				
 				sView.show('slide-in-right', 100);	
 		 

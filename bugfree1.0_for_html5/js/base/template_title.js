@@ -6,7 +6,7 @@
 	"use strict";
 	 
 	var page = function (){};
-	page.onOpenerJs = bodyPage.onOpenerJs;
+	page.onOpenerJs_static = bodyPage.onOpenerJs_static;
 	T.extend(page.prototype,B,{
 		onCreate:function(){  
 			var that = this;
