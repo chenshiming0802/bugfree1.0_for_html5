@@ -8,15 +8,32 @@
 			
 		}, 
 		onResume:function(extra){  
-			var that = this;
+			var that = this , doc = document;
 			that.bugId = extra.bugId;
-			alert(that.bugId);
+			console.log("  getRemoteJsonByProxy");
 			T.getRemoteJsonByProxy("buginfo2.php",
 				{
-					"bugId":that.bugId,
+					"bugId":that.bugId,  
 				},
 				function(data){
-					console.log(data);
+					var source = doc.getElementById("template_div").innerHTML;
+					var template = Handlebars.compile(source);				 	
+					var result = template(data);  
+					doc.getElementById("data_div").innerHTML = result ;
+					
+					var comments = data.comments;
+					for(var k in comments){
+						console.log(data);
+						console.log(" fullInfo1:"+comments[k].fullInfo);
+						console.log(" fullInfo2:"+Handlebars.SafeString(comments[k].fullInfo));
+						data.comments[k].fullInfo = comments[k].fullInfo.replaceAll("\n","<br>");
+						// = Handlebars.SafeString(data.comments[k].fullInfo);
+					}
+					
+					var source = doc.getElementById("template_li").innerHTML;
+					var template = Handlebars.compile(source);				 	
+					var result = template(data);  
+					doc.getElementById("data_ul").innerHTML += result ;
 				}
 			);
 

@@ -6,23 +6,55 @@
     <title></title>
  	<link rel="stylesheet" href="css/base.css" type="text/css" />
  	<link rel="stylesheet" href="css/mui.css" type="text/css" />
-<style>
-
-</style>
+ 
 </head>
 <body>
  
-	<div class="mui-table">
-		<h4 class="mui-ellipsis">信息化推进办公室张彦合同付款信息化</h4>
-		<p class="mui-h6 mui-ellipsis">项目模块：BSP_会员服务平台</p>
-		<p class="mui-h6 mui-ellipsis">事件类型：BUG修改</p>
-		<p class="mui-h6 mui-ellipsis">期望时间：20140910 19:00:00</p>
+	<div class="mui-content-padded"  id="data_div">
+		<div class="template">
+		<h4>信息化推进办公室张彦合同付款信息化</h4>
+		<p>项目模块：BSP_会员服务平台</p>
+		<p>事件类型：BUG修改</p>
+		<p>期望时间：20140910 19:00:00</p>
+		<p>严重程度：重要不紧急</p>
+		<p>指派人员：陈市明&lt;chenshiming&gt;</p>
+		<p>由谁创建：蔡蕾瑾</p><BR>
+		</div>
 	</div>
-		
+
+	<h4>回复历史</h4>
+	<ul class="mui-table-view" id="data_ul">
+		<li class="mui-table-view-cell template">
+			<span class="mui-ellipsis-max">
+				<h5>2014-09-23 09:57 Opened BY 蔡蕾瑾</h5>
+				bsp报表查询目录下的会员和频道申请报表无法下载。请查明原因并处理，谢谢！
+			</span>
+		</li>
+	</ul> 
+
+<script id="template_div" type="text/x-handlebars-template">
+		<h3>{{bugTitle}}</h3>
+		<p>项目模块：{{projectName}} {{moduleName}}</p>
+		<p>事件类型：{{bugType}}</p>
+		<p>期望时间：{{fixedTime}}</p>
+		<p>严重程度：{{bugSeverity}}</p>
+		<p>指派人员：{{assignedToRealUserName}}</p>
+		<p>由谁创建：{{openedByRealUserName}}</p><BR>
+</script>
+<script id="template_li" type="text/x-handlebars-template">
+	{{#comments}}
+		<li class="mui-table-view-cell">
+			<span class="mui-ellipsis-max">
+				<h5>{{actionDate}} {{action}} BY {{userName}}</h5>
+				{{{fullInfo}}}
+			</span>
+		</li>
+    {{/comments}}
+</script>
  
    
 </body>
-<!--<script type="application/javascript" src="js/depend/handlebars-v2.0.0.js"></script>-->
+<script type="application/javascript" src="js/depend/handlebars-v2.0.0.js"></script>
 <script type="application/javascript" src="js/base/base.js"></script>
 <script type="application/javascript" src="js/app/service_body.js"></script>
 <script type="application/javascript" src="js/base/startup.js"></script>
