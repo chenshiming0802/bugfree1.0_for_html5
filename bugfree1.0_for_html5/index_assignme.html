@@ -5,33 +5,21 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title></title>
  	<link rel="stylesheet" href="css/base.css" type="text/css" />
- 	<link rel="stylesheet" href="css/mui.css" type="text/css" />
+ 	<link rel="stylesheet" href="css/mui.min.css" type="text/css" />
+ 	<link rel="stylesheet" href="js/depend/font-awesome-4.1.0/css/font-awesome.min.css" />
 <style>
 
 </style>
 </head>
 <body>
-<div class="mui-content">
-    <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" id="data_ul">
-        <li class="mui-table-view-cell template" >
-            <div class="mui-table">
-                <div class="mui-table-cell mui-col-xs-10">
-                    <h4 class="mui-ellipsis">信息化推进办公室张彦合同付款信息化</h4>
-                    <h5>BugFree首页/测试模块</h5>
-                    <h5>陈市明 2014-11-18 21:47:42创建</h5>
-                    <h5>期望2014-11-20 20:00:00完成</h5>
-                    <!--<p class="mui-h6 mui-ellipsis">交行信息卡，100元等你拿，</p>-->
-                </div>
-                <div class="mui-table-cell mui-col-xs-2 mui-text-right">
-                	<span class="mui-h4">000000</span>
-					<span class="mui-h5">Activie</span>
-					<span class="mui-h5">陈市明</span> 
-                </div>
-            </div>
-        </li>
-    </ul>
-</div>
  
+<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+	<div class="mui-scroll">
+		<ul class="mui-table-view mui-table-view-chevron"  id="data_ul"></ul>
+	</div>
+</div>
+
+
 <script id="template" type="text/x-handlebars-template">
 	{{#datas}} 
         <li class="mui-table-view-cell"  bugId="{{bugId}}">       	
@@ -40,13 +28,13 @@
                     <h4 class="mui-ellipsis">{{bugTitle}}</h4>
                     <h5>{{projectName}} {{moduleName}}</h5>
                     <h5>{{openedByRealUserName}} {{openedDate}}创建</h5>
-                    <h5>期望{{fixedTime}}完成</h5>
+                    <h5>期望 {{fixedTime}} 完成</h5>
                     <!--<p class="mui-h6 mui-ellipsis">交行信息卡，100元等你拿，</p>-->
                 </div>
                 <div class="mui-table-cell mui-col-xs-2 mui-text-right">
                 	<span class="mui-h5">{{bugId}}</span>
 					<span class="mui-h5">{{bugStatus}}</span>
-					<span class="mui-h5">{{assignedToRealUserName}}</span> 
+					<span class="mui-h5">{{assignedToRealUserName}}</span>
                 </div>
             </div>   
         </li> 
@@ -54,7 +42,7 @@
  </script>
    
 </body>
-<!--<script type="application/javascript" src="js/depend/mui.js"></script>-->
+<script type="application/javascript" src="js/depend/mui.min.js"></script>
 <script type="application/javascript" src="js/depend/handlebars-v2.0.0.js"></script>
 <script type="application/javascript" src="js/base/base.js"></script>
 <script type="application/javascript" src="js/app/index_assignme.js"></script>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title></title>
+ 	<link rel="stylesheet" href="css/base.css" type="text/css" />
+ 	<link rel="stylesheet" href="css/mui.min.css" type="text/css" />
+<style>
+
+</style>
+</head>
+<body>
+	<div class="mui-content-padded"  id="data_div">
+            <div class="mui-input-row">
+                	指派人员：<input type="text" class="mui-input-row" placeholder="请选择指派人员">
+            </div>
+            <div class="mui-input-row">
+                	常见意见：
+                	<select class="mui-input-row" >
+                		<option name=""></option>
+                		<option name="">审批通过，请尽快执行！</option>
+                		<option name="">阅知！</option>
+                	</select>
+            </div> 
+            <div class="mui-input-row">
+                	意见回复：<textarea rows="5"></textarea>
+            </div>       
+	</div>
+	<nav id="nav" class="mui-bar mui-bar-tab">
+		<a id="editBt" class="mui-tab-item mui-active" href="#tabbar">
+			<span class="mui-tab-label">更新事件</span>
+		</a>
+		<a id="cancelBt" class="mui-tab-item" href="#tabbar-with-chat">
+			<span class="mui-icon mui-icon-email"></span>
+			<span class="mui-tab-label">取消</span>
+		</a>		
+	</nav>	
+   
+</body>
+<script type="application/javascript" src="js/depend/mui.min.js"></script>
+<!--<script type="application/javascript" src="js/depend/handlebars-v2.0.0.js"></script>-->
+<script type="application/javascript" src="js/base/base.js"></script>
+<script type="application/javascript" src="js/app/service_edit.js"></script>
+<script type="application/javascript" src="js/base/startup.js"></script>
+</html>

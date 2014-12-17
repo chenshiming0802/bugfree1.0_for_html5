@@ -5,25 +5,67 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Index</title>
  	<link rel="stylesheet" href="css/base.css" type="text/css" />
- 	<link rel="stylesheet" href="css/mui.css" type="text/css" />
+ 	<link rel="stylesheet" href="css/mui.min.css" type="text/css" />
+ 	<link rel="stylesheet" href="js/depend/font-awesome-4.1.0/css/font-awesome.min.css" />
 </head>
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			.mui-fadein {
+				/*-webkit-animation: fadein 0.1s;
+				animation: fadein 0.1s;*/
+				
+				opacity: 1;
+			}
+			.mui-fadeout {
+				opacity: 0;
+			}
+			@keyframes fadein {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
+			@-webkit-keyframes fadein {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
+			@keyframes fadeout {
+				from {
+					opacity: 1;
+				}
+				to {
+					opacity: 0;
+				}
+			}
+			@-webkit-keyframes fadeout {
+				from {
+					opacity: 1;
+				}
+				to {
+					opacity: 0;
+				}
+			}
+		</style>
 <body>
  
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!--<a class="mui-icon mui-icon-left-nav mui-pull-left"></a>-->
 			<h1 class="mui-title" id="headerTitle"></h1>
-			<a class="mui-icon mui-icon-search mui-pull-right"></a>
-			<a class="mui-icon mui-icon-refreshempty mui-pull-right"></a>
-		</header>
- 		<div class="mui-content">
-			<div class="mui-pull-top-pocket">
-				<div class="mui-pull">
-					<div id="icon" class="mui-pull-loading mui-icon mui-icon-pulldown"></div>
-					<div id="text" class="mui-pull-caption">下拉可以刷新</div>
-				</div>
+			<div class="mui-pull-right">
+				<i id="search" class="fa fa-search fa-fw"></i>&nbsp;&nbsp;&nbsp;<i id="refresh" class="fa fa-refresh fa-fw"></i>
 			</div>
-		</div>
-		
+			
+		</header>
+ 		<div class="mui-content"></div>		
 		
 		<nav id="nav" class="mui-bar mui-bar-tab">
 			<a id="assignme" class="mui-tab-item mui-active" href="#tabbar">
@@ -50,6 +92,7 @@
  
    
 </body>
+<script type="application/javascript" src="js/depend/mui.min.js"></script>
 <script type="application/javascript" src="js/base/base.js"></script>
 <script type="application/javascript" src="js/app/index.js"></script> 
 <script type="application/javascript" src="js/base/startup.js"></script> 

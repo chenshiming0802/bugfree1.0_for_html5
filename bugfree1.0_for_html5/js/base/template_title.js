@@ -28,7 +28,8 @@
 					}								
 				}  
 			}	
-			var bodyView = that.createView(that.bodyUrl,"body",{top:"48px",bottom:"0px"},bodyParam);
+			//TODO 需要将48修改掉
+			var bodyView = that.createView(that.bodyUrl,"body",{top:"48px",bottom:"48px"},bodyParam);
 			bodyView.show();
 			that.resumeView(bodyView,extra);	
 		},

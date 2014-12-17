@@ -12,7 +12,7 @@
  		 onCreate:function(){ 
  		 	T.l("onCreate");
  		 	var that = this;
- 		 	if(!page) return; 
+ 		 	//if(!page) return; 
  		 	that.baseinit();
  		 	page.currentView = plus.webview.currentWebview();	 
  		 	page.openerView = page.currentView.opener();//TODO test openerView==null
@@ -20,7 +20,7 @@
 			//this.onResume(); 
  		 }, 
  		 /*可继承 参照android activity#onResume*/
- 		 onResume:function(extra,config){ 
+ 		 onResume:function(extra){ 
  		 	T.l("onResume");
  		 	var that = this;
  		 	
@@ -68,24 +68,12 @@
  		 		plus.webview.hide(page.currentView,'slide-out-right',100);
 
  		 		for(var k in that._newView){
- 		 			plus.webview.close( that._newView[k]);
+ 		 			plus.webview.close(that._newView[k]);
  		 		} 		 		
  		 	}
  		 },
- 		 /*可继承 下拉刷新*/
-		 onPullRefresh:function(){
- 			T.l("onPullRefresh");	 
- 			page.onPullRefresh();
-		 },
-		 /*可继承 上拉读取更多*/
-		 onPullLoadMore:function(){
- 			T.l("onPullLoadMore");	 
- 			page.onPullLoadMore();			
-		 },  		 
- 		 handleEvent: function(e){ 	
- 		 	T.l("handleEvent");	 
-		 }	
- 	});  
+ 	}); 
+ 	window.startup = new startup();
  		
  	var startPage = function(){  
  		window.startup.onCreate();   
@@ -99,28 +87,22 @@
 	    	window.startup.onResume();  
 		});	   	
 		/*借鉴android onPause注册*/
-	    document.addEventListener("pause", function(){
+	    document.addEventListener("pause", function(){ 
 	    	window.startup.onPause();  
 		});	
  		plus.key.addEventListener('backbutton', function(){
  			window.startup.onAndroidBack();    
  		});
  	}
- 	if(window.startup){
- 		console.log("window.startup exists");
- 		return;
- 	}
- 	
-    window.startup = new startup();
-    if(window.plus){
+
+	window.mui.plusReady(function() {
     	startPage();
     	startPage = function(){};
-    	return;
-    }
-    document.addEventListener("plusready", function(){
-		startPage();
-		startPage = function(){};
-	});	 
- 
- 
+    	return;		
+	});
+
 })(window.base,window.tools,window.page); 
+
+
+
+

@@ -3,6 +3,7 @@
 	"use strict"
  
 	window.base =  {
+		pageSize:5,
 		_newView:[],/*本窗口创建的view，在返回是需要关闭*/
 		/*初始化base的内容*/
 		baseinit:function(){
@@ -30,11 +31,46 @@
 			tools.l("resume("+extrastring+");");
 			view.evalJS("window.startup.onResume("+extrastring+");");		 
 		},
-		/*给子窗口继承，父窗口调用*/
+		setPullRefresh:function(id,pullDownF,pullUpF){
+			var config = {
+				pullRefresh: {
+					container: '#'+id,
+					down: {
+						callback: pullDownF
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullUpF
+					}
+				}
+			};
+			mui.init(config);	
+			if (mui.os.plus) {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().pullupLoading();
+				}, 1000);
+
+			} else {
+				mui('#pullrefresh').pullRefresh().pullupLoading();
+			}							
+		},
+		/*
+		setPullRefresh:function(config){
+			//that.pullResfreshConfig = config;
+			mui.init(config);	
+			if (mui.os.plus) {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().pullupLoading();
+				}, 1000);
+
+			} else {
+				mui('#pullrefresh').pullRefresh().pullupLoading();
+			}	
+		}*/
+		/*
 	 	setPullLoadMore:function(weixin){
 			weixin.evalJS("document.addEventListener('plusscrollbottom',function(){page.onPullLoadMore()});");	
 	 	},
-	 	/*给父窗口继承，父窗口调用*/
 		setPullRefresh:function(weixin){
 			var that = this;
 			weixin.setBounce({position:{top:"50%"},changeoffset:{top:"48px"}});	 
@@ -79,7 +115,7 @@
 			eicon.style.webkitAnimation = "";
 			
 		},
-		
+		*/
 	};
 	
 })();
@@ -101,8 +137,8 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 		 * 打印日志
 		 */
 		l:function(str){
-			console.log("["+plus.webview.currentWebview().id+"] "+ str);
-		},//TODO test log
+			console.log("["+plus.webview.currentWebview().id+"] "+ str + "                                ");
+		}, 
 		/**
 		 * 实现类继承
 		 * 摘自与csdn.js
@@ -329,6 +365,9 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 		 */
 		getParentArticle:function (element,tagName){
 			tagName = tagName||"ARTICLE";
+			if(element.tagName==tagName){
+				return element;
+			}
 			var a = null;
 			for(var i=0,j=8;i<j;i++){
 				a = element.parentNode;
