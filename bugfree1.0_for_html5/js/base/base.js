@@ -1,19 +1,17 @@
 /* Page的基类，理论上非不得已的情况下都放在tools下 */
 (function(){
 	"use strict"
- 
- 
- 	
+
 	window.base =  {
 		pageSize:5,
-		_newView:[],/*本窗口创建的view，在返回是需要关闭*/
+		//_newView:[],/*本窗口创建的view，在返回是需要关闭 deleted*/
 		/*初始化base的内容*/
 		baseinit:function(){
 			var that = this;
 		},
-		/*创建view，如果存在则直接返回
+		/*创建view，如果存在则直接返回 deleted
 		 isAlieWithParent:生命周期是否根据父窗口，默认true
-		 * */
+		 * *//*
 		createView:function(fileName,viewName,style,param,isAlieWithParent){
 			var that = this;
 			if(isAlieWithParent==undefined){
@@ -22,24 +20,25 @@
 			var view = plus.webview.getWebviewById(viewName);
 			if(!view){
 				view = plus.webview.create(fileName,viewName,style,param);
-				/*如果生命周期跟着父窗口，则加入列表*/
+				//如果生命周期跟着父窗口，则加入列表
 				if(isAlieWithParent===true)
 					that._newView.push(view);//记录开的缓存，以备关闭
 			}		
 			return view;
-		},
-		/*画面create后，需要调用resume才会显示数据*/ 
+		},*/
+		/*画面create后，需要调用resume才会显示数据 deleted*//*
 		resume:function(extra){
 			var that = this; 
 			extra = extra || {};
 			that.currentView.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");	 // 
-		},
+		},*/
+		/*deleted*//*
 		resumeView:function(view,extra){
 			extra = extra || {};
 			var extrastring = JSON.stringify(extra);
 			tools.l("resume("+extrastring+");");
 			view.evalJS("window.startup.onResume("+extrastring+");");		 
-		},
+		},*/
 		setPullRefresh:function(id,pullDownF,pullUpF){
 			var config = {
 				pullRefresh: {
@@ -61,7 +60,8 @@
 
 			} else {
 				mui('#pullrefresh').pullRefresh().pullupLoading();
-			}							
+			}		
+			
 		},
 	};
 	
@@ -283,7 +283,86 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 	    },
 	    storage_clear:function(){
 	    	plus.storage.clear();
+	    },
+	    /*创建webview*/
+	    createView:function(fileName,viewName,style,param,isAlieWithParent){
+	    	var view = new View();
+	    	return view.createView(fileName,viewName,style,param,isAlieWithParent);
 	    }
 	};
 	
+	
+	/*分装webview类*/
+	var View = function(){};
+	window.tools.extend(View.prototype,{
+		_newView:[],/*本窗口创建的view，在返回是需要关闭*/
+		view:null,
+		/*通过id获取viwe(必须已经创建过的，否则返回null)*/
+		getViewById:function(id){
+			var that = this;
+			var view = plus.webview.getWebviewById(id);
+			if(!view)	return null;
+			that.view = view;
+			return this;
+		},
+		setView:function(view){
+			var that = this;
+			that.view = view;
+			return that;
+		},
+		/*创建view，如果存在则直接返回
+		 isAlieWithParent:生命周期是否根据父窗口，默认true
+		 * */
+		createView:function(fileName,viewName,style,param,isAlieWithParent){
+			var that = this;
+			if(isAlieWithParent==undefined){
+				isAlieWithParent = true;
+			}
+			var view = plus.webview.getWebviewById(viewName);
+			if(!view){
+				view = plus.webview.create(fileName,viewName,style,param);
+				/*如果生命周期跟着父窗口，则加入列表*/
+				if(isAlieWithParent===true)
+					that._newView.push(view);//记录开的缓存，以备关闭
+			}		
+			that.view = view;
+			return that;
+		},
+		show:function(extra,aniShow,duration){
+			//todo assert view not null
+			/*执行resume数据*/
+			var that = this;
+			extra = extra || {};
+			aniShow = aniShow || "slide-in-right";
+			duration = duration || "150";
+			//console.log(extra); 
+			that.view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");
+			//console.log("["+that.view.id+"]onResume");
+			/*显示画面*/
+			that.view.show(aniShow,duration);
+		},
+		hide:function(aniShow,duration){
+			var that = this;
+			aniShow = aniShow || "slide-in-left";
+			duration = duration || "150";			
+			that.view.hide(aniShow,duration);			
+		},
+		close:function(aniShow,duration){
+			var that = this;
+			that.hide();
+			that.view.close();
+		},
+		getWebviewById:function(id){
+			var that = this;
+			return that.view.getWebviewById(id);
+		},
+		opener:function(){
+			var that = this;
+			return that.view.opener();
+		},
+		append:function(childView){
+			this.view.append(childView.view);
+		},
+	});
+	window.View = View;
 })();

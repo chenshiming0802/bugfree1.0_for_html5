@@ -18,16 +18,18 @@
 		onJs:function(){    
 			var that = this , doc = document;
 			/*预加载index画面*/
-			var sView = that.createView("index.html","index",sty,{},false);
+			//var sView = null;
+			var sView = T.createView("index.html","index",{},{},false);
 			/*登录按钮点击*/
 			T.on("tap",that.loginBt,function(e){
-				if(that.username.value==""||that.userPassword.value==""){
+				T.l("tap2 loginBt");
+				if(that.userName.value==""||that.userPassword.value==""){
 					plus.nativeUI.toast("请输入登录帐号名和登录密码。" );
 					return;
 				}
 				Mod.getRemoteJsonByProxy("dologin2.php",
 					{
-						"userName":that.username.value,
+						"userName":that.userName.value,
 						"userPassword":that.userPassword.value,
 					},
 					function(json){

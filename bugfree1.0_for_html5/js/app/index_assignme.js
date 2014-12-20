@@ -6,16 +6,19 @@
 		onCreate:function(){  
 			var that = this,doc =document;
 			var data_ul = doc.getElementById("data_ul");
-			that.isAssignMe = this.currentView.isAssignMe||"0"; 
-			that.isMeCreate = this.currentView.isMeCreate||"0"; 
-			that.queryString = this.currentView.queryString||""; 
-			that.setPullRefresh("pullrefresh",that.onPullRefresh,that.onPullLoadMore);
+
 			
 			that.currentIndex = 0;//当前页数
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
-		}, 
+			that.isAssignMe = extra.isAssignMe||"0"; 
+			that.isMeCreate = extra.isMeCreate||"0"; 
+			that.queryString = extra.queryString||""; 
+			
+			that.setPullRefresh("pullrefresh",that.onPullRefresh,that.onPullLoadMore);
+			
+		},
 		_renderData:function(pageIndex,callback){
 			var that = this , doc = document;
 			Mod.getRemoteJsonByProxy("buginfos2.php",
@@ -33,7 +36,7 @@
 			var that = this , doc = document;
 			var ul = doc.getElementById("data_ul");
 			var sty = {top:"0px",bottom:"0px"};
-			var sView = that.createView("service.html","service",sty,{bodyUrl:"service_body.html"});	
+			var sView = T.createView("service.html","service",sty,{bodyUrl:"service_body.html"});	
 			T.on("tap",ul,function(e){
 				var article = T.getParentArticle(e.target,"LI");
 				var bugId = article.getAttribute("bugId");				

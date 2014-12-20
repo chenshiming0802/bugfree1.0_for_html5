@@ -32,6 +32,7 @@
 		
 		/*业务功能:*/
 		getRemoteJsonByProxy:function(serviceName,posts,successFunction,errorFunction){
+			var that = this;
 			var baseUrl = "http://testenv.bsp.bsteel.net/baosteel_cas2/service_proxy2.jsp";
 			var u = baseUrl + "?_SERVICE_=" + serviceName; 
 			//u = "http://192.168.1.107/test/posttest.php?id=1";
@@ -52,9 +53,10 @@
 			
 			var xhr=new plus.net.XMLHttpRequest();
 			xhr.onreadystatechange=function(){
+				tools.l("  return.readyState="+xhr.readyState);
 				if(xhr.readyState == 4){
 					if ( xhr.status == 200 ) {				
-						tools.l("  return="+xhr.responseText); 
+						tools.l("  return.200="+xhr.responseText); 
 						var str = xhr.responseText;
 						//alert(str);
 						var data = [];
@@ -71,19 +73,19 @@
 							errorFunction("网络错误");
 						}
 					}else{
-						
+						tools.l("  return.status="+xhr.status);
 					}
 				}
 			};
 			xhr.open("POST", u);
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-			//xhr.setRequestHeader("ucore1","ADE1C062E16EAB4AACA11F7F89053FFD");
 			var user = that.getUserSession();
 			console.log(user);
 			if(user && user.ucore1){
 				console.log("user.ucore1:"+user.ucore1);	
 				xhr.setRequestHeader("ucore1",user.ucore1);
 			}
+			xhr.setRequestHeader("ucore1","ADE1C062E16EAB4AACA11F7F89053FFD");
 			// xhr.send("pageIndex=1&pageSize=20 ");//
 			xhr.send(postData);
 			tools.l("post "+u);

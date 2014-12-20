@@ -45,7 +45,7 @@
 		onOpenerJs_static:function(openerPage,openExtra){
 			var that = openerPage,doc = document;
 	 		var sty = {top:"30%",bottom:"0px"};
-	 		var editView = that.createView("service_edit.html","service_edit",sty,{});
+	 		var editView = T.createView("service_edit.html","service_edit",sty,{});
 	 	
 			var obj = doc.getElementById("nav");
 			T.on("tap",obj,function(e){
