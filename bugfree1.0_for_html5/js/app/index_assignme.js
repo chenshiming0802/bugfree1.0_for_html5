@@ -1,4 +1,4 @@
-(function(B,T){
+(function(B,T,Mod){
 	"use strict";
 			
 	var page = function (){};
@@ -15,16 +15,10 @@
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
-//			that._renderData(1,function(data){
-//				var source = doc.getElementById("template").innerHTML;
-//				var template = Handlebars.compile(source);				 	
-//				var result = template(data);  
-//				doc.getElementById("data_ul").innerHTML += result ;
-//			});
 		}, 
 		_renderData:function(pageIndex,callback){
 			var that = this , doc = document;
-			T.getRemoteJsonByProxy("buginfos2.php",
+			Mod.getRemoteJsonByProxy("buginfos2.php",
 				{
 					"pageIndex":pageIndex,
 					"pageSize":that.pageSize,
@@ -47,6 +41,7 @@
 				that.resumeView(sView, {bugId:bugId});  
 			});
 		}, 
+		/*下拉刷新*/
 		onPullRefresh:function(){
 			var that = window.page,doc = document;
 			console.log(that);
@@ -60,6 +55,7 @@
 				that.currentIndex = 1;
 			});	
 		},
+		/*下拉读取更多*/
 		onPullLoadMore:function(){
 			var that = window.page,doc = document;
 			that.currentIndex += 1;
@@ -80,4 +76,4 @@
 	});  
 	
 	window.page = new page();
-})(window.base,window.tools);
+})(window.base,window.tools,window._mod);

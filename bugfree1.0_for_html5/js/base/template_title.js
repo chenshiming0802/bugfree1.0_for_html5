@@ -35,7 +35,7 @@
 		},
 		onJs:function(){ 
 			var that = this;
-			page.onOpenerJs_static(that.extra);
+			page.onOpenerJs_static(that,that.extra);
 		}, 		
  
 	}); 

@@ -1,4 +1,4 @@
-(function(B,T){
+(function(B,T,Mod){
 	"use strict";
 	 
 	var page = function (){};
@@ -10,7 +10,7 @@
 		onResume:function(extra){    
 			var that = this , doc = document;
 			/*
-			T.getRemoteJsonByProxy("buginfos2.php",
+			Mod.getRemoteJsonByProxy("buginfos2.php",
 				{
 					"pageIndex":"1",
 					"pageSize":"20",
@@ -28,13 +28,10 @@
 
 		}, 
 		onJs:function(){    
-		}, 
-		onPullRefresh:function(){
+			var that = this,doc = document;
 		},
-		onPullLoadMore:function(){
-		}, 
 		 
 	});  
 	
 	window.page = new page();
-})(window.base,window.tools);
+})(window.base,window.tools,window._mod);

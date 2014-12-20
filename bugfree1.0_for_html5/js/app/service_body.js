@@ -1,4 +1,4 @@
-(function(B,T){
+(function(B,T,Mod){
 	"use strict";
 	 
 	var page = function (){};
@@ -10,7 +10,7 @@
 			var that = this , doc = document;
 			that.bugId = extra.bugId;
 			T.l("  getRemoteJsonByProxy");
-			T.getRemoteJsonByProxy("buginfo2.php",  
+			Mod.getRemoteJsonByProxy("buginfo2.php",  
 				{
 					"bugId":that.bugId,  
 				},
@@ -42,20 +42,18 @@
 			var that = this;
 			that.currentView.opener().evalJS("startup.onAndroidBack();");
 		},
-		onOpenerJs_static:function(openExtra){
-			var that = this,doc = document;
-	 
+		onOpenerJs_static:function(openerPage,openExtra){
+			var that = openerPage,doc = document;
+	 		var sty = {top:"30%",bottom:"0px"};
+	 		var editView = that.createView("service_edit.html","service_edit",sty,{});
+	 	
 			var obj = doc.getElementById("nav");
-			T.on("click",obj,function(e){
+			T.on("tap",obj,function(e){
 				var pObj = T.getParentArticle(e.target,"A");
 				var pId = pObj.getAttribute("id");
 				switch(pId){
-					case "editBt":
-						//TODO test 编辑
-						alert('hi1');
-						var sty = {top:"50%",bottom:"0px"};
-						var v1 = that.createView("service_edit.html","service_edit",sty,{});
-						v1.show();
+					case "editBt":			
+						editView.show('slide-in-bottom', 150);
 						break;
 					case "uploadBt":
 						alert("updateBt");
@@ -73,4 +71,4 @@
 	});  
 	
 	window.page = new page();
-})(window.base,window.tools);
+})(window.base,window.tools,window._mod);

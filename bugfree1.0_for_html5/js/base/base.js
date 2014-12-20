@@ -2,6 +2,8 @@
 (function(){
 	"use strict"
  
+ 
+ 	
 	window.base =  {
 		pageSize:5,
 		_newView:[],/*本窗口创建的view，在返回是需要关闭*/
@@ -9,13 +11,20 @@
 		baseinit:function(){
 			var that = this;
 		},
-		/*创建view，如果存在则直接返回*/
-		createView:function(fileName,viewName,style,param){
+		/*创建view，如果存在则直接返回
+		 isAlieWithParent:生命周期是否根据父窗口，默认true
+		 * */
+		createView:function(fileName,viewName,style,param,isAlieWithParent){
 			var that = this;
+			if(isAlieWithParent==undefined){
+				isAlieWithParent = true;
+			}
 			var view = plus.webview.getWebviewById(viewName);
 			if(!view){
 				view = plus.webview.create(fileName,viewName,style,param);
-				that._newView.push(view);//记录开的缓存，以备关闭
+				/*如果生命周期跟着父窗口，则加入列表*/
+				if(isAlieWithParent===true)
+					that._newView.push(view);//记录开的缓存，以备关闭
 			}		
 			return view;
 		},
@@ -54,68 +63,6 @@
 				mui('#pullrefresh').pullRefresh().pullupLoading();
 			}							
 		},
-		/*
-		setPullRefresh:function(config){
-			//that.pullResfreshConfig = config;
-			mui.init(config);	
-			if (mui.os.plus) {
-				setTimeout(function() {
-					mui('#pullrefresh').pullRefresh().pullupLoading();
-				}, 1000);
-
-			} else {
-				mui('#pullrefresh').pullRefresh().pullupLoading();
-			}	
-		}*/
-		/*
-	 	setPullLoadMore:function(weixin){
-			weixin.evalJS("document.addEventListener('plusscrollbottom',function(){page.onPullLoadMore()});");	
-	 	},
-		setPullRefresh:function(weixin){
-			var that = this;
-			weixin.setBounce({position:{top:"50%"},changeoffset:{top:"48px"}});	 
-			var etext = document.getElementById("text"),
-				eicon = document.getElementById("icon");			 
-			weixin.addEventListener("dragBounce",function(e){
-					switch(e.status){
-						case "beforeChangeOffset"://下拉可刷新状态
-							etext.innerText = "下拉可以刷新";
-							eicon.className = 'mui-pull-loading mui-icon mui-icon-pulldown';
-							eicon.style.webkitTransition = "all 0.3s ease-in";
-							eicon.style.webkitTransform = "rotate(0deg)";
-							break;
-						case "afterChangeOffset"://松开可刷新状态 
-							etext.innerText = "释放立即刷新";
-							eicon.className = 'mui-pull-loading mui-icon mui-icon-pulldown';
-							eicon.style.webkitTransition = "all 0.3s ease-in";
-							eicon.style.webkitTransform = "rotate(180deg)";
-							break;
-						case "dragEndAfterChangeOffset"://正在刷新状态							
-							etext.innerText = "正在刷新...";
-							eicon.className = 'mui-pull-loading mui-icon mui-icon-spinner-cycle';
-							eicon.style.webkitAnimation = "spin 1s infinite linear";
-							setTimeout(function(){
-								weixin.evalJS("page.onPullRefresh();");	
-								weixin.endPullToRefresh();
-								that._pullReset();								
-							},0);
-							
-							break;
-						default:
-							break;
-					}
-				},false);
-		},
-		_pullReset:function() {
-			var etext = document.getElementById("text"),
-				eicon = document.getElementById("icon");	
-			etext.innerText = "下拉可刷新";
-			eicon.style.webkitTransition = "";
-			eicon.style.webkitTransform = "";
-			eicon.style.webkitAnimation = "";
-			
-		},
-		*/
 	};
 	
 })();
@@ -282,59 +229,6 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 	        for (var i in o) arr.push("'" + i + "':" + fmt(o[i]));
 	        return '{' + arr.join(',') + '}';
 	    },*/
-		/*业务功能:*/
-		getRemoteJsonByProxy:function(serviceName,posts,successFunction,errorFunction){
-			var baseUrl = "http://testenv.bsp.bsteel.net/baosteel_cas2/service_proxy2.jsp";
-			var u = baseUrl + "?_SERVICE_=" + serviceName; 
-			//u = "http://192.168.1.107/test/posttest.php?id=1";
-			
-			/*
-			var forms = new FormData();  
-			for(var p in posts){
-				console.log(p+"::"+posts[p])
-				forms.append(p, posts[p]);	
-			}*/
-			
-			var sep = "";
-			var postData = "";
-			for(var p in posts){
-				postData += sep + p + "=" + posts[p];
-				sep = "&";
-			}
-			
-			var xhr=new plus.net.XMLHttpRequest();
-			xhr.onreadystatechange=function(){
-				if(xhr.readyState == 4){
-					if ( xhr.status == 200 ) {				
-						tools.l("  return="+xhr.responseText); 
-						var str = xhr.responseText;
-						//alert(str);
-						var data = [];
-						try{
-							data = eval('(' + str + ')');
-						}catch(e){
-							data.resultFlag = "1";
-							data.resultMessage = "网络错误";
-						}
-						if(data.resultFlag=="0"){
-							successFunction(data);
-						}else{
-							errorFunction = errorFunction || alert;
-							errorFunction("网络错误");
-						}
-					}else{
-						
-					}
-				}
-			};
-			xhr.open("POST", u);
-			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-			xhr.setRequestHeader("ucore1","ADE1C062E16EAB4AACA11F7F89053FFD");			
-			// xhr.send("pageIndex=1&pageSize=20 ");//
-			xhr.send(postData);
-			tools.l("post "+u);
-			tools.l("   data:"+postData)
-		},
 		isIOS : function() {
 			return navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i);
 		},
@@ -378,7 +272,18 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			} 	
 			return null;	
  		},	     
-	    
+	    storage_get:function(key){
+	    	return plus.storage.getItem(key);
+	    },
+	    storage_set:function(key,obj){
+	    	plus.storage.setItem(key, value);
+	    },
+	    storage_remove:function(key){
+	    	plus.storage.removeItem(key);
+	    },
+	    storage_clear:function(){
+	    	plus.storage.clear();
+	    }
 	};
 	
 })();
