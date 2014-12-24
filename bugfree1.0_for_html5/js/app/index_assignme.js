@@ -36,12 +36,11 @@
 			var that = this , doc = document;
 			var ul = doc.getElementById("data_ul");
 			var sty = {top:"0px",bottom:"0px"};
-			var sView = T.createView("service.html","service",sty,{bodyUrl:"service_body.html"});	
+			var sView = T.createView("service.html","service",sty,[]);
 			T.on("tap",ul,function(e){
 				var article = T.getParentArticle(e.target,"LI");
 				var bugId = article.getAttribute("bugId");				
-				sView.show('slide-in-right', 150);		 
-				that.resumeView(sView, {bugId:bugId});  
+				sView.show({bugId:bugId});
 			});
 		}, 
 		/*下拉刷新*/

@@ -21,7 +21,6 @@
 			});
 			T.on("tap",that.cancelBt,function(e){
 				alert('cancel click');
-				that.openerView.hide("slide-out-bottom",150);
 			});
 		}, 
 		 

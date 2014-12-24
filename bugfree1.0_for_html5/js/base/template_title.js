@@ -10,28 +10,16 @@
 	T.extend(page.prototype,B,{
 		onCreate:function(){  
 			var that = this;
-			that.bodyUrl = that.currentView.bodyUrl;
- 			
+			that.bodyUrl = "service_body.html";//TODO bodyUrl应该移入servcie.html中
+			console.log("that.currentView.bodyUrl:"+that.currentView.bodyUrl);
+			//TODO 需要将48修改掉
+ 			that.bodyView = T.createView(that.bodyUrl,"body",{top:"48px",bottom:"48px"},[]);
+ 			that.currentView.append(that.bodyView);
 		}, 
 		/*需要先调用setBody*/
 		onResume:function(extra){   	
-			console.log(extra);
 			var that = this;
-			that.extra = extra;
-			//只获取外部传入的参数
-			var bodyParam = {};
-			for(var k in that.currentView){ 
-				if(k!="__IDENTITY__" && k!="__uuid__"  && k!="__callback_id__" && k!="id"){
-					var v = that.currentView[k];
-					if(typeof v=="string"){
-						bodyParam[k] = that.currentView[k];
-					}								
-				}  
-			}	
-			//TODO 需要将48修改掉
-			var bodyView = that.createView(that.bodyUrl,"body",{top:"48px",bottom:"48px"},bodyParam);
-			bodyView.show();
-			that.resumeView(bodyView,extra);	
+			that.bodyView.show(extra);
 		},
 		onJs:function(){ 
 			var that = this;

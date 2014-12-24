@@ -5,6 +5,7 @@
 	T.extend(page.prototype,B,{
 		onCreate:function(){  
 			var that = this , doc = document;
+ 
 		}, 
 		onResume:function(extra){  
 			var that = this , doc = document;
@@ -15,8 +16,7 @@
 					"bugId":that.bugId,  
 				},
 				function(data){
-					//page.openerView.evalJS("document.getElemnetById('headerTitle').innerHTML='"+data.bugId+"详情';")//TODO test service头标注
-					 
+	 
 					var source = doc.getElementById("template_div").innerHTML;
 					var template = Handlebars.compile(source);				 	
 					var result = template(data);  
@@ -35,12 +35,18 @@
 			);
 
 		}, 
-		onJs:function(){    
+		unResume:function(){
+			var that = this , doc = document;
+			doc.getElementById("data_div").innerHTML = "" ;
+			doc.getElementById("data_ul").innerHTML = "" ;
+		},
+		onJs:function(){ 
+		 
 		}, 
 		/*子窗口的返回事件传递给父窗口*/
 		onAndroidBack:function(){
 			var that = this;
-			that.currentView.opener().evalJS("startup.onAndroidBack();");
+			that.currentView.openerEvalJS("window.startup.onAndroidBack();");
 		},
 		onOpenerJs_static:function(openerPage,openExtra){
 			var that = openerPage,doc = document;

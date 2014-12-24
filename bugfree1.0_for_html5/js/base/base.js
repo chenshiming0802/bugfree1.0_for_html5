@@ -4,41 +4,10 @@
 
 	window.base =  {
 		pageSize:5,
-		//_newView:[],/*本窗口创建的view，在返回是需要关闭 deleted*/
 		/*初始化base的内容*/
 		baseinit:function(){
 			var that = this;
-		},
-		/*创建view，如果存在则直接返回 deleted
-		 isAlieWithParent:生命周期是否根据父窗口，默认true
-		 * *//*
-		createView:function(fileName,viewName,style,param,isAlieWithParent){
-			var that = this;
-			if(isAlieWithParent==undefined){
-				isAlieWithParent = true;
-			}
-			var view = plus.webview.getWebviewById(viewName);
-			if(!view){
-				view = plus.webview.create(fileName,viewName,style,param);
-				//如果生命周期跟着父窗口，则加入列表
-				if(isAlieWithParent===true)
-					that._newView.push(view);//记录开的缓存，以备关闭
-			}		
-			return view;
-		},*/
-		/*画面create后，需要调用resume才会显示数据 deleted*//*
-		resume:function(extra){
-			var that = this; 
-			extra = extra || {};
-			that.currentView.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");	 // 
-		},*/
-		/*deleted*//*
-		resumeView:function(view,extra){
-			extra = extra || {};
-			var extrastring = JSON.stringify(extra);
-			tools.l("resume("+extrastring+");");
-			view.evalJS("window.startup.onResume("+extrastring+");");		 
-		},*/
+		},	 
 		setPullRefresh:function(id,pullDownF,pullUpF){
 			var config = {
 				pullRefresh: {
@@ -206,52 +175,12 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			        ele.className=ele.className.replace(reg,' ');
 		   }
 		},
-		/**
-		 * 休眠X秒，用于调试用
-		 * @param {Object} seconds
-		 */
- 		sleep:function (seconds) {
-		    this.date = Math.round(new Date().getTime()/1000);
-		    while(1) {
-		        if(Math.round(new Date().getTime()/1000) - this.date >= seconds) break;
-		    }
-	 	   return true;
-	 	},
-		 
-		/*
-	    json2str:function (o) {
-	        var arr = [];
-	        var currentT = this;
-	        var fmt = function(s) {
-	            if (typeof s == 'object' && s != null) return currentT.json2str(s);
-	            return /^(string|number)$/.test(typeof s) ? "'" + s + "'" : s;
-	        }
-	        for (var i in o) arr.push("'" + i + "':" + fmt(o[i]));
-	        return '{' + arr.join(',') + '}';
-	    },*/
 		isIOS : function() {
 			return navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i);
 		},
 		isAndroid : function(t) {
 			return navigator.userAgent.match(/Android/i);
 		},
-		/**
-		 * 增加点击后的UI显示效果
-		 * @param {Object} obj
-		 * @param {Object} className
-		 *//*
-	    pressDisplay:function(element,className){
-	    	console.log('---');
-	    	console.log(element);
-			var that = window.tools;
-	        className = className||"gc_b2";
-	        that.on("touchstart",element,function(e){
-	        	that.addClass(element,className);
-	        });
-	        that.on("touchend",element,function(e){ 
-	            that.removeClass(element,className);
-	        }); 
-	    },*/
 		/**
 		 * 获取父组织的article节点
 		 * @param {Object} element
@@ -285,83 +214,123 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 	    	plus.storage.clear();
 	    },
 	    /*创建webview*/
-	    createView:function(fileName,viewName,style,param,isAlieWithParent){
+	    createView:function(fileName,id,style,param,isAlieWithParent){
 	    	var view = new View();
-	    	return view.createView(fileName,viewName,style,param,isAlieWithParent);
-	    }
+	    	return view.createView(fileName,id,style,param,isAlieWithParent);
+	    },
+		array_pushUniqueValue:function(arr,value){
+	    	var isFound = false;
+	    	for(var k in arr){
+	    		if(arr[k]==value){
+	    			isFound = true;
+	    		}
+	    	}
+	    	if(isFound===false){
+	    		arr.push(value);
+	    	}
+	    }	    
 	};
 	
 	
 	/*分装webview类*/
 	var View = function(){};
 	window.tools.extend(View.prototype,{
-		_newView:[],/*本窗口创建的view，在返回是需要关闭*/
-		view:null,
-		/*通过id获取viwe(必须已经创建过的，否则返回null)*/
-		getViewById:function(id){
-			var that = this;
-			var view = plus.webview.getWebviewById(id);
-			if(!view)	return null;
-			that.view = view;
-			return this;
-		},
+		_view:null,
 		setView:function(view){
 			var that = this;
-			that.view = view;
+			that._view = view;
+			return that;
+		},
+		/**
+		 * 通过页面号获取页面
+		 */
+		getWebviewById:function(id){
+			var that = this;
+			var currentView = plus.webview.currentWebview();
+			
+			var viewName = id;//+"@"+currentView.id;	
+			that._view = plus.webview.getWebviewById(viewName);
 			return that;
 		},
 		/*创建view，如果存在则直接返回
 		 isAlieWithParent:生命周期是否根据父窗口，默认true
 		 * */
-		createView:function(fileName,viewName,style,param,isAlieWithParent){
+		createView:function(fileName,id,style,param,isAlieWithParent){
 			var that = this;
+	
 			if(isAlieWithParent==undefined){
 				isAlieWithParent = true;
 			}
-			var view = plus.webview.getWebviewById(viewName);
-			if(!view){
-				view = plus.webview.create(fileName,viewName,style,param);
-				/*如果生命周期跟着父窗口，则加入列表*/
-				if(isAlieWithParent===true)
-					that._newView.push(view);//记录开的缓存，以备关闭
-			}		
-			that.view = view;
+			var currentView = plus.webview.currentWebview();
+			var viewName = id;//+"@"+currentView.id;
+			
+			that._view = plus.webview.getWebviewById(viewName);//由于在startup中close 有问题，因此此处页面复用
+			if(!that._view){
+				that._view = plus.webview.create(fileName,viewName,style,param);
+			}
+			
+			/*如果生命周期跟着父窗口，则加入列表*/
+			var currentView = plus.webview.currentWebview();
+			if(!that._view || isAlieWithParent===true){//子窗口和不依附于母窗口，不调用close
+				if(window._runtime.hasCallOnResume===true){//记录开的缓存，以备关闭				
+					window.tools.array_pushUniqueValue(window._runtime._newViewOnResume,that._view.id);//TODO test _newViewOnResume
+				}else{
+					window.tools.array_pushUniqueValue(window._runtime._newViewOnCreate,that._view.id);
+				}			
+			}			
 			return that;
 		},
 		show:function(extra,aniShow,duration){
-			//todo assert view not null
 			/*执行resume数据*/
 			var that = this;
 			extra = extra || {};
 			aniShow = aniShow || "slide-in-right";
-			duration = duration || "150";
-			//console.log(extra); 
-			that.view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");
-			//console.log("["+that.view.id+"]onResume");
-			/*显示画面*/
-			that.view.show(aniShow,duration);
+			duration = duration || "300";
+			
+			that._view.evalJS("console.log(\"ready to call onResume\");");
+			that._view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");//TODO resume可能早于startup的加载
+			
+			//如果是子窗口显示，则不用调用show方法
+			if(!that._view.parent()){
+				that._view.evalJS("window._runtime._show_aniShow=\""+aniShow+"\";");//记录划入的方式，划出时用
+				that._view.evalJS("window._runtime._show_duration=\""+duration+"\";");
+				/*显示画面*/
+				that._view.show(aniShow,duration);				
+			}else{
+				plus.webview.show(that._view.id,"none");
+			}
+		},
+		remove:function(view){
+			var that = this;
+			that._view.remove(view._view);
 		},
 		hide:function(aniShow,duration){
 			var that = this;
 			aniShow = aniShow || "slide-in-left";
-			duration = duration || "150";			
-			that.view.hide(aniShow,duration);			
+			duration = duration || "300";			
+			//that._view.hide(aniShow,duration);	//划出有webview自定处理
+			console.log("evalJs onHide at "+that._view.id);
+			that._view.evalJS("window.startup.onHide()");
+			
 		},
 		close:function(aniShow,duration){
 			var that = this;
-			that.hide();
-			that.view.close();
+			that.hide(aniShow,duration);
+			that._view.evalJS("window.startup.onClose()");
+			
+			//that._view.close(); 有当前页面在js content中关闭
 		},
-		getWebviewById:function(id){
+		openerEvalJS:function(js){
 			var that = this;
-			return that.view.getWebviewById(id);
-		},
-		opener:function(){
-			var that = this;
-			return that.view.opener();
+			that._view.opener().evalJS(js);
 		},
 		append:function(childView){
-			this.view.append(childView.view);
+			var that = this;
+			that._view.append(childView._view);
+		},
+		evalJS:function(js){
+			var that = this;
+			that._view.evalJS(js);
 		},
 	});
 	window.View = View;
