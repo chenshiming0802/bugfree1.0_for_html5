@@ -9,6 +9,7 @@
  		isPause:false,
  		resumeExtra:null,
  		hasCallOnResume:false,
+ 		resultOnCreate:false,
  		 /*可继承 参照android activity#onCreate*/
  		 onCreate:function(){ 
  		 	T.l("onCreate-"+plus.webview.currentWebview().id);
@@ -17,23 +18,20 @@
  		 	that.baseinit();
  		 	page.currentView = new View().setView(plus.webview.currentWebview());
  		 	that.currentView = page.currentView;
- 		 	//page.openerView = new View().setView(plus.webview.currentWebview().opener());
+ 		 	page.openerView = new View().setView(plus.webview.currentWebview().opener());
+ 		 	that.openerView = page.openerView;
  		 	
  		 	page.onCreate();
+ 		 	//that.resultOnCreate = page.onCreate();
  		 	
-// 		 	if(!window.sessionStorage.isNextPage){//第一个页面调用resume
-// 		 		T.l("first page,to execute onResume()"); 
-// 		 		this.onResume([]); 
-// 		 		window.sessionStorage.isNextPage = true;
-// 		 	}
-			//this.onResume(); 
+ 		 	//that.onResume();//TODO for debug
  		 }, 
  		 /*除了第一个页面外，该方法指在onPause后执行onResume动作，由于所有页面都会被调用onPauseResume，因此不建议使用*/
    		 onPauseResume:function(){
    		 	var that = this;
    		 	if(that.hasCallOnResume===true){
     		 	T.l("onPauseResume");
-		 		if(page.onPauseResume){
+		 		if(page.onPauseResume){ 
 					page.onPauseResume();
 				}	  		 		
    		 	}
@@ -42,6 +40,16 @@
  		 onResume:function(extra){ 
  		 	T.l("onResume:"+JSON.stringify(extra));
  		 	var that = this;
+ 		 	
+// 		 	if(that.resultOnCreate===false){
+// 		 		T.l("Do not call onResume,due to onCreate's result is false!'");
+// 		 		return;
+// 		 	}
+ 		 	
+// 		 	if(window._runtime.hasCallOnResume===true){
+// 		 		T.l("重复调用resume");
+//				return;
+//			}
  		 	
  		 	window._runtime.hasCallOnResume = true;
  		 	
@@ -52,16 +60,25 @@
  		 		that.isPause = false;
  		 	}  
  		 	that.resumeExtra = extra;
- 		 	page.onResume(extra);//由webvice的show调用来，来代理调用page的resume	 	
- 		 	//延迟加载js绑定等动作，为更快的展现数据
- 		 	setTimeout(function(){
- 		 		that.onJs();  
- 		 	},2500);	
+ 		 	var resultResume = page.onResume(that.resumeExtra || {});//由webvice的show调用来，来代理调用page的resume	 
+ 		 	
+ 		 	if(resultResume!==false){
+	  		 	//延迟加载js绑定等动作，为更快的展现数据
+	 		 	setTimeout(function(){
+	 		 		if(window._runtime.hasCallOnJs===false){
+	 		 			window._runtime.hasCallOnJs = true;
+	 		 			that.onJs();   		 			
+	 		 		}	 		 		
+	 		 	},1000);			 		
+ 		 	}
+
  		 },
  		 /*可继承 用户清空UI上的数据，以便该view可服用*/
  		 unResume:function(){
  		 	T.l("unResume");	 
  		 	var that = this;
+ 		 	window._runtime.hasCallOnResume = false;
+ 		 	console.log(window._runtime);
 			if(page.unResume){
 				page.unResume();
 			}	 	
@@ -94,14 +111,19 @@
  		 	if(page.onAndroidBack){
  		 		page.onAndroidBack();
  		 	}else{
- 		 		page.currentView.hide(); 		
+ 		 		if(that.openerView){
+ 		 			page.currentView.hide(); 	
+ 		 		}else{
+ 		 			plus.nativeUI.toast("当前为最后一页，不能后退了！");
+ 		 		}
+ 		 		
+ 		 			
  		 	}
  		 },
  		 /*可继承  android的关闭事件*/
    		 onHide:function(){
 		 	var that = this;
    		 	T.l("onHide");	 
-			console.log(window._runtime);
 			if(page.onHide){
 				page.onHide();
 			}	
@@ -162,6 +184,7 @@
  	window.startup = new startup();
  	window._runtime = {
  		hasCallOnResume:false,
+ 		hasCallOnJs:false,
  		_newViewOnCreate:[],
  		_newViewOnResume:[],
  		_show_aniShow:"none",

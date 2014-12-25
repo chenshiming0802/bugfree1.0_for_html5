@@ -5,22 +5,27 @@
 	T.extend(page.prototype,B,{
 		onCreate:function(){
 			var that = this , doc = document; 
-			//this.isAssignMe = this.currentView.isAssignMe||"0"; 
-			
+
 			that.editBt = doc.getElementById("editBt");
 			that.cancelBt = doc.getElementById("cancelBt");
+			that.commonReplySel = doc.getElementById("commonReplySel");
+			that.replyTa = doc.getElementById("replyTa");
+			return true;
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
-
+			return true;
 		}, 
 		onJs:function(){  
 			var that = this,doc = document;
+			T.on("change",that.commonReplySel,function(e){
+				 that.replyTa.value = that.commonReplySel.values;
+			});
 			T.on("tap",that.editBt,function(e){
 				alert('editBt click');
 			});
 			T.on("tap",that.cancelBt,function(e){
-				alert('cancel click');
+				this.currentView.hide();
 			});
 		}, 
 		 

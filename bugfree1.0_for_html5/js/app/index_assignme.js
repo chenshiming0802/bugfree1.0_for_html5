@@ -9,6 +9,7 @@
 
 			
 			that.currentIndex = 0;//当前页数
+			return true;
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
@@ -17,7 +18,7 @@
 			that.queryString = extra.queryString||""; 
 			
 			that.setPullRefresh("pullrefresh",that.onPullRefresh,that.onPullLoadMore);
-			
+			return true;	
 		},
 		_renderData:function(pageIndex,callback){
 			var that = this , doc = document;

@@ -5,7 +5,7 @@
 	T.extend(page.prototype,B,{
 		onCreate:function(){  
 			var that = this , doc = document;
- 
+ 			return true;
 		}, 
 		onResume:function(extra){  
 			var that = this , doc = document;
@@ -33,7 +33,7 @@
 					doc.getElementById("data_ul").innerHTML += result ;
 				}
 			);
-
+			return true;
 		}, 
 		unResume:function(){
 			var that = this , doc = document;

@@ -8,22 +8,26 @@
 		_currentChildView:null,
 		onCreate:function(){  
 			var that = this , doc = document;
-
+ 
 			that.nav = doc.getElementById("nav");
 			that.headerTitle = doc.getElementById("headerTitle");
+			
 			that.currentView.evalJS("window.startup.onResume([])");//第一个页面，需要手动触发resume动作
- 
+ 			return true;
 		},
 		onResume:function(extra){   
 			var that = this , doc = document;
-			/*如果没有登录过，则跳转到登录画面
+
+			/*如果没有登录过，则跳转到登录画面*/
 			if(Mod.hasUserSession()===false){
 				that._logout();
-				return;
-			}*/
+				return false;
+			}	
+
 			var sty = {top:"48px",bottom:"48px"};
 			that.assignmeView = T.createView("index_assignme.html","assignme",sty,{});
-			that._showView("assignme");		
+			that._showView("assignme");
+			return true;
 		},  
 		onJs:function(){  
 			var that = this , doc = document;
@@ -39,11 +43,12 @@
 				T.l("tap nav:"+obj.id);
 				
 				switch(obj.id){
-					case "lououtA":
-						that._logout();
+					case "logoutA":
+						that._tapLogoutBt();
 						break;
 					default:
 						that._showView(obj.id);	
+						break;
 				}
 
 			});
@@ -73,12 +78,26 @@
 			that._currentChildView = v;			
 		},
 		/*注销操作*/ 
-		_logout:function(){
+		_tapLogoutBt:function(){
 			var that = this,doc=document;
-			var v = T.createView("login.html","login",{},{},false);
-			v.show("slide-in-left",150);
-			that.currentView.close();
+			
+			plus.nativeUI.confirm( "您确认是要退出帐号登录吗?", function(e){
+				if(e.index==0){
+					that._logout();		
+				}
+			}, "nativeUI", ["退出登录","取消操作"] );			
+
+			
+			//that.currentView.close();
 		},
+		_logout:function(){
+			var that = this;
+			Mod.clearUserSession();		
+			
+			var v = T.createView("login.html","login",{},{},false);
+			v.show([]);		
+			that.currentView.hide();
+		}
 	});  
 	
 	window.page = new page();

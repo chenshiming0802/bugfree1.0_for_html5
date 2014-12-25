@@ -15,6 +15,7 @@
 			//TODO 需要将48修改掉
  			that.bodyView = T.createView(that.bodyUrl,"body",{top:"48px",bottom:"48px"},[]);
  			that.currentView.append(that.bodyView);
+ 			return true;
 		}, 
 		/*需要先调用setBody*/
 		onResume:function(extra){   	

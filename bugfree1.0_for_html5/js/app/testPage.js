@@ -6,6 +6,7 @@
 		onCreate:function(){
 			var that = this , doc = document; 
 			//this.isAssignMe = this.currentView.isAssignMe||"0"; 
+			return true;
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
@@ -25,8 +26,12 @@
 					document.getElementById("data_ul").innerHTML += result ;
 				}
 			);*/
+			return true;
 
 		}, 
+		unResume:function(){
+			var that = this , doc = document;
+		},		
 		onJs:function(){    
 			var that = this,doc = document;
 		},

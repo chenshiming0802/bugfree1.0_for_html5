@@ -88,7 +88,9 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 		 * @param {Object} bubble 
 		 */   
 		on : function(type, el , func , bubble) {
-			//console.log("add event:"+type);
+			//console.log("add event:"+type);\
+			//console.log("   on");
+			//console.log(func);
 			el.addEventListener(type, func, !!bubble);
 			/*
 			try{ 
@@ -201,11 +203,11 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			} 	
 			return null;	
  		},	     
-	    storage_get:function(key){
+	    storage_get:function(key){    	
 	    	return plus.storage.getItem(key);
 	    },
 	    storage_set:function(key,obj){
-	    	plus.storage.setItem(key, value);
+	    	plus.storage.setItem(key, obj);
 	    },
 	    storage_remove:function(key){
 	    	plus.storage.removeItem(key);
@@ -228,6 +230,16 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 	    	if(isFound===false){
 	    		arr.push(value);
 	    	}
+	    },
+	    /*select获取值*/
+	    form_select_getValue:function(obj){
+			var val=obj.options[obj.options.selectedIndex].value;
+			return val;	    	
+	    },
+	    /*select获取值*/
+	    form_select_getText:function(obj){
+			var txt=obj.options[obj.options.selectedIndex].text;
+			return txt;    	
 	    }	    
 	};
 	
@@ -291,13 +303,16 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			that._view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");//TODO resume可能早于startup的加载
 			
 			//如果是子窗口显示，则不用调用show方法
-			if(!that._view.parent()){
+			var parent = that._view.parent();
+			if(!parent){
 				that._view.evalJS("window._runtime._show_aniShow=\""+aniShow+"\";");//记录划入的方式，划出时用
 				that._view.evalJS("window._runtime._show_duration=\""+duration+"\";");
 				/*显示画面*/
 				that._view.show(aniShow,duration);				
-			}else{
-				plus.webview.show(that._view.id,"none");
+			}else{		
+				if(!that._view.isVisible()){
+					plus.webview.show(that._view.id,"none");
+				}	
 			}
 		},
 		remove:function(view){
