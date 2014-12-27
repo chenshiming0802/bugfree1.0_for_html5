@@ -82,12 +82,10 @@
 			
 			var xhr=new plus.net.XMLHttpRequest();
 			xhr.onreadystatechange=function(){
-				tools.l("  return.readyState="+xhr.readyState);
 				if(xhr.readyState == 4){
 					if ( xhr.status == 200 ) {				
-						tools.l("  return.200="+xhr.responseText); 
 						var str = xhr.responseText;
-						//alert(str);
+						tools.l("  return.200="+str); 
 						var data = [];
 						try{
 							data = eval('(' + str + ')');
@@ -109,7 +107,6 @@
 			xhr.open("POST", u);
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			var user = that.getUserSession();
-			console.log(user);
 			if(user && user.ucore1){
 				console.log("user.ucore1:"+user.ucore1);	
 				xhr.setRequestHeader("ucore1",user.ucore1);

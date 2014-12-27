@@ -32,6 +32,35 @@
 			}		
 			
 		},
+		/*参考android native的 startActivityForResult - 父窗口调用,subview先执行startActivityForResult后再执行show*/
+		startActivityForResult:function(subView,requestCode){
+			var that = this;
+			if(subView.isVisible()){
+				window.tools.devError("webview在startActivityForResult后才能执行show动作");
+			}
+			//console.log("startActivityForResult");
+			//console.log("   window._runtime.ar_openerViewId='"+that.currentView.id+"';");
+			subView.evalJS("window._runtime.ar_openerViewId='"+that.currentView.id+"';");
+			subView.evalJS("window._runtime.ar_requestCode='"+requestCode+"';");
+		},
+		/*参考android native的 setResut - 子窗口调用返回父窗口*/
+		setResut:function(resultCode,extra){
+			var that = this;
+			var extraStr = JSON.stringify(extra);
+			//extraStr = extraStr.replaceAll("\"","\\\"");
+			var param = "window.startup.onActivityResult(\""+window._runtime.ar_requestCode+"\",\""+resultCode+"\","+extraStr+");";
+			console.log("call webview-"+window._runtime.ar_openerViewId+" : "+param);
+			var activity_result_parentview = new View().getWebviewById(window._runtime.ar_openerViewId);
+			if(!activity_result_parentview._view){
+				window.tools.devError("setResut回调中，id为"+window._runtime.ar_openerViewId+"的webview为空，导致回调失败！");
+			}
+			if(that.parentView._view){
+				that.parentView.hide();
+			}else{
+				that.currentView.hide();
+			}
+			activity_result_parentview.evalJS(param);
+		},
 	};
 	
 })();
@@ -49,6 +78,10 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 	"use strict"
 
 	window.tools =  {
+		/*开发者错误*/
+		devError:function(message){
+			alert("开发者错误："+message);
+		},
 		/**
 		 * 打印日志
 		 */
@@ -248,9 +281,12 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 	var View = function(){};
 	window.tools.extend(View.prototype,{
 		_view:null,
+		id:null,
 		setView:function(view){
 			var that = this;
 			that._view = view;
+			if(that._view)
+				that.id = that._view.id;
 			return that;
 		},
 		/**
@@ -262,6 +298,8 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			
 			var viewName = id;//+"@"+currentView.id;	
 			that._view = plus.webview.getWebviewById(viewName);
+			if(that._view)
+				that.id = that._view.id;
 			return that;
 		},
 		/*创建view，如果存在则直接返回
@@ -279,15 +317,17 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			that._view = plus.webview.getWebviewById(viewName);//由于在startup中close 有问题，因此此处页面复用
 			if(!that._view){
 				that._view = plus.webview.create(fileName,viewName,style,param);
+				if(that._view)
+					that.id = that._view.id;
 			}
 			
 			/*如果生命周期跟着父窗口，则加入列表*/
 			var currentView = plus.webview.currentWebview();
 			if(!that._view || isAlieWithParent===true){//子窗口和不依附于母窗口，不调用close
 				if(window._runtime.hasCallOnResume===true){//记录开的缓存，以备关闭				
-					window.tools.array_pushUniqueValue(window._runtime._newViewOnResume,that._view.id);//TODO test _newViewOnResume
+					window.tools.array_pushUniqueValue(window._runtime.newViewOnResume,that._view.id);//TODO test newViewOnResume
 				}else{
-					window.tools.array_pushUniqueValue(window._runtime._newViewOnCreate,that._view.id);
+					window.tools.array_pushUniqueValue(window._runtime.newViewOnCreate,that._view.id);
 				}			
 			}			
 			return that;
@@ -298,21 +338,28 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			extra = extra || {};
 			aniShow = aniShow || "slide-in-right";
 			duration = duration || "300";
-			
+ 
 			that._view.evalJS("console.log(\"ready to call onResume\");");
 			that._view.evalJS("window.startup.onResume("+JSON.stringify(extra)+");");//TODO resume可能早于startup的加载
 			
 			//如果是子窗口显示，则不用调用show方法
 			var parent = that._view.parent();
 			if(!parent){
-				that._view.evalJS("window._runtime._show_aniShow=\""+aniShow+"\";");//记录划入的方式，划出时用
-				that._view.evalJS("window._runtime._show_duration=\""+duration+"\";");
+				that._view.evalJS("window._runtime.show_aniShow=\""+aniShow+"\";");//记录划入的方式，划出时用
+				that._view.evalJS("window._runtime.show_duration=\""+duration+"\";");	
 				/*显示画面*/
 				that._view.show(aniShow,duration);				
-			}else{		
+			}else{
+				if(plus.webview.currentWebview().id!=parent.id){
+					window.tools.devError("只有在当前窗口才可以append ar_openerViewId子窗口，当前窗口是"+plus.webview.currentWebview().id);
+				}
+				//当前view如果是隐藏，则展现出来
 				if(!that._view.isVisible()){
 					plus.webview.show(that._view.id,"none");
 				}	
+				that._view.evalJS("window._runtime.ar_openerViewId='"+window._runtime.ar_openerViewId+"';");
+				that._view.evalJS("window._runtime.ar_requestCode='"+window._runtime.ar_requestCode+"';");						
+				
 			}
 		},
 		remove:function(view){
@@ -347,6 +394,10 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			var that = this;
 			that._view.evalJS(js);
 		},
+		isVisible:function(){
+			var that = this;
+			return that._view.isVisible();
+		}
 	});
 	window.View = View;
 })();

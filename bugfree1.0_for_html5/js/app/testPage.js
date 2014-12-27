@@ -5,27 +5,17 @@
 	T.extend(page.prototype,B,{
 		onCreate:function(){
 			var that = this , doc = document; 
-			//this.isAssignMe = this.currentView.isAssignMe||"0"; 
+			
+			//var data_ul = doc.getElementById("data_ul");
+			//that.currentIndex = 0;//当前页数
+			//页面模板
+			//var source = doc.getElementById("template").innerHTML;
+			//that.template = Handlebars.compile(source);				
 			return true;
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
-			/*
-			Mod.getRemoteJsonByProxy("buginfos2.php",
-				{
-					"pageIndex":"1",
-					"pageSize":"20",
-					"isAssignMe":that.isAssignMe,
-					"isMeCreate":that.isMeCreate,
-					"queryString":that.queryString,
-				},
-				function(data){
-					var source = document.getElementById("template").innerHTML;
-					var template = Handlebars.compile(source);				 	
-					var result = template(data);  
-					document.getElementById("data_ul").innerHTML += result ;
-				}
-			);*/
+			//that.isAssignMe = extra.isAssignMe||"0"; 
 			return true;
 
 		}, 
@@ -34,8 +24,14 @@
 		},		
 		onJs:function(){    
 			var that = this,doc = document;
+			
+			//T.on("tap",that.loginBt,function(e){
+			//});
 		},
-		 
+		openerBodyUrl:"",
+		onOpenerJs_static:function(openerPage,openExtra){
+			var that = openerPage,doc = document;
+		}
 	});  
 	
 	window.page = new page();

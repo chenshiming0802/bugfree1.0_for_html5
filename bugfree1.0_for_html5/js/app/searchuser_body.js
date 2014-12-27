@@ -1,57 +1,66 @@
 (function(B,T,Mod){
 	"use strict";
-			
+	 
 	var page = function (){};
 	T.extend(page.prototype,B,{
-		onCreate:function(){  
-			var that = this,doc =document;
+		onCreate:function(){
+			var that = this , doc = document; 
+			that.queryString = doc.getElementById("queryString");
+			
 			that.data_ul = doc.getElementById("data_ul");
 			that.currentIndex = 0;//当前页数
 			
 			//页面模板
 			var source = doc.getElementById("template").innerHTML;
 			that.template = Handlebars.compile(source);	
-			
 			return true;
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
-			that.isAssignMe = extra.isAssignMe||"0"; 
-			that.isMeCreate = extra.isMeCreate||"0"; 
-			that.queryString = extra.queryString||""; 
-			
-			that.setPullRefresh("pullrefresh",that.onPullRefresh,that.onPullLoadMore);
-			return true;	
-		},
-		onJs:function(){    
-			var that = this , doc = document;
-			var ul = doc.getElementById("data_ul");
-			var sty = {top:"0px",bottom:"0px"};
-			var sView = T.createView("service.html","service",sty,[]);
-			T.on("tap",ul,function(e){
-				var article = T.getParentArticle(e.target,"LI");
-				var bugId = article.getAttribute("bugId");				
-				sView.show({bugId:bugId});
-			});
+			//this.isAssignMe = this.currentView.isAssignMe||"0"; 
+			console.log(window._runtime);
+			return true;
+
 		}, 
+		unResume:function(){
+			var that = this , doc = document;
+		},		
+		onJs:function(){    
+			var that = this,doc = document;
+			T.on("change",that.queryString,function(e){
+				console.log("change queryString:"+that.queryString.value);
+				if(that.queryString.value.length>=1){
+					that.onPullRefresh();
+				}
+			});
+			T.on("tap",that.data_ul,function(e){	
+				var obj = T.getParentArticle(e.target,"LI")
+				var extra = {
+					userName:obj.getAttribute("userName"),
+					realName:obj.getAttribute("realName"),			
+				};
+				console.log("click data_ul:"+JSON.stringify(extra));
+				that.setResut("0",extra);
+			});
+		},
 		_renderData:function(pageIndex,callback){
 			var that = this , doc = document;
-			Mod.getRemoteJsonByProxy("buginfos2.php",
+			Mod.getRemoteJsonByProxy("queryUsers2.php",
 				{
-					"pageIndex":pageIndex,
-					"pageSize":that.pageSize,
-					"isAssignMe":that.isAssignMe,
-					"isMeCreate":that.isMeCreate,
-					"queryString":that.queryString,
+					"pageIndex":"1",
+					"pageSize":"20",
+					"queryString":that.queryString.value,
+					"type":"user",
 				},
 				callback
-			);			
+			);			 
 		},		
 		/*下拉刷新*/
 		onPullRefresh:function(){
+			T.l("onPullRefresh");
 			var that = window.page,doc = document;
 			console.log(that);
-			that._renderData(1,function(data){					 	
+			that._renderData(1,function(data){		 	
 				var result = that.template(data);  
 				that.data_ul.innerHTML = result ;
 				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
@@ -72,8 +81,11 @@
 				}
 				mui('#pullrefresh').pullRefresh().endPullupToRefresh(flag); 
 			});				
-		}, 
-		 
+		}, 	
+		openerBodyUrl:"searchuser_body.html",
+		onOpenerJs_static:function(openerPage,openExtra){
+			var that = openerPage,doc = document;
+		}		
 	});  
 	
 	window.page = new page();

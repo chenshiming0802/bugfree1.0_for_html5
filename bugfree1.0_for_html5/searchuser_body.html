@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title></title>
+ 	<link rel="stylesheet" href="css/base.css" type="text/css" />
+ 	<link rel="stylesheet" href="css/mui.min.css" type="text/css" />
+<style>
+
+</style>
+</head>
+<body>
+  
+<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+	<div class="mui-scroll">
+		<div class="mui-input-row mui-search">
+			<input type="search" class="mui-input-speech mui-input-clear" placeholder="请输入员工姓名/帐号关键字" id="queryString">
+		</div>
+		<ul class="mui-table-view mui-table-view-chevron"  id="data_ul"></ul>
+	</div>
+</div>
+
+ 
+<script id="template" type="text/x-handlebars-template">
+	{{#datas}} 
+        <li class="mui-table-view-cell" realName="{{realName}}" userName="{{userName}}">{{realName}} - {{userName}}</li> 
+    {{/datas}}
+ </script>
+   
+</body>
+<script type="application/javascript" src="js/depend/mui.min.js"></script>
+<script type="application/javascript" src="js/depend/handlebars-v2.0.0.js"></script>
+<script type="application/javascript" src="js/base/base.js"></script>
+<script type="application/javascript" src="js/app/_mod.js"></script>
+<script type="application/javascript" src="js/app/searchuser_body.js"></script>
+<script type="application/javascript" src="js/base/startup.js"></script>
+</html>

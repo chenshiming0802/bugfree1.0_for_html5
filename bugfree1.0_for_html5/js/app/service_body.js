@@ -43,11 +43,15 @@
 		onJs:function(){ 
 		 
 		}, 
-		/*子窗口的返回事件传递给父窗口*/
-		onAndroidBack:function(){
-			var that = this;
-			that.currentView.openerEvalJS("window.startup.onAndroidBack();");
+		/*子窗口的返回事件传递给父窗口*/ //TODO 子窗口的后腿
+//		onAndroidBack:function(){
+//			var that = this;
+//			that.currentView.openerEvalJS("window.startup.onAndroidBack();");
+//		},
+		onActivityResult:function(requestCode, resultCode,extra){
+			console.log("xxxx");
 		},
+		openerBodyUrl:"service_body.html",
 		onOpenerJs_static:function(openerPage,openExtra){
 			var that = openerPage,doc = document;
 	 		var sty = {top:"30%",bottom:"0px"};

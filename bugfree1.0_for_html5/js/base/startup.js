@@ -1,7 +1,7 @@
 /*×画面启动类*/
 (function(B,T,page,View){
 	"use strict";
- 	 
+ 	//window.startup.onActivityResult("searchuserView","0",{"userName":"chenshiming","realName":"陈市明"}); 
  	//base.onCreate();
  
  	var startup = function (){};
@@ -20,11 +20,13 @@
  		 	that.currentView = page.currentView;
  		 	page.openerView = new View().setView(plus.webview.currentWebview().opener());
  		 	that.openerView = page.openerView;
- 		 	
+ 		 	page.parentView = new View().setView(plus.webview.currentWebview().parent());
+ 		 	that.parentView = page.parentView; 
+ 
  		 	page.onCreate();
  		 	//that.resultOnCreate = page.onCreate();
  		 	
- 		 	//that.onResume();//TODO for debug
+ 		 	that.onResume();//TODO for debug
  		 }, 
  		 /*除了第一个页面外，该方法指在onPause后执行onResume动作，由于所有页面都会被调用onPauseResume，因此不建议使用*/
    		 onPauseResume:function(){
@@ -111,7 +113,10 @@
  		 	if(page.onAndroidBack){
  		 		page.onAndroidBack();
  		 	}else{
- 		 		if(that.openerView){
+ 		 		if(that.parentView._view){//TODO 子窗口的后腿
+ 		 			//that.currentView.openerEvalJS("window.startup.onAndroidBack();");
+ 		 			that.parentView.evalJS("window.startup.onAndroidBack();");
+ 		 		}else if(that.openerView){
  		 			page.currentView.hide(); 	
  		 		}else{
  		 			plus.nativeUI.toast("当前为最后一页，不能后退了！");
@@ -131,32 +136,32 @@
 
    		 	console.log("hide webview:"+that.currentView._view.id);
    		 	
-   		 	var _show_aniShow = window._runtime._show_aniShow;
-   		 	switch(_show_aniShow){
-   		 		case "slide-in-right": _show_aniShow="slide-in-left";break;
-   		 		case "slide-in-left": _show_aniShow="slide-in-right";break;
-   		 		case "slide-in-top": _show_aniShow="slide-in-bottom";break;
-   		 		case "slide-in-bottom": _show_aniShow="slide-in-top";break;
-   		 		case "fade-in": _show_aniShow="fade-out";break;
-   		 		case "fade-out": _show_aniShow="fade-in";break;
-   		 		case "pop-in": _show_aniShow="pop-out";break;
-   		 		case "pop-out": _show_aniShow="pop-in";break;
+   		 	var show_aniShow = window._runtime.show_aniShow;
+   		 	switch(show_aniShow){
+   		 		case "slide-in-right": show_aniShow="slide-in-left";break;
+   		 		case "slide-in-left": show_aniShow="slide-in-right";break;
+   		 		case "slide-in-top": show_aniShow="slide-in-bottom";break;
+   		 		case "slide-in-bottom": show_aniShow="slide-in-top";break;
+   		 		case "fade-in": show_aniShow="fade-out";break;
+   		 		case "fade-out": show_aniShow="fade-in";break;
+   		 		case "pop-in": show_aniShow="pop-out";break;
+   		 		case "pop-out": show_aniShow="pop-in";break;
    		 	}
-   		 	that.currentView._view.hide(_show_aniShow,window._runtime._show_duration);
+   		 	that.currentView._view.hide(show_aniShow,window._runtime.show_duration);
    		 	if(window._runtime.hasCallOnResume===true){
    		 		that.unResume();//如果执行过resume，则调用unResume
    		 	}
    		 	
    		 	setTimeout(function(){
-	   		 	for(var k in window._runtime._newViewOnCreate){
-	   		 		var v = new View().getWebviewById(window._runtime._newViewOnCreate[k]);	
+	   		 	for(var k in window._runtime.newViewOnCreate){
+	   		 		var v = new View().getWebviewById(window._runtime.newViewOnCreate[k]);	
 					v.hide();
 	   		 	}	
-	   		 	for(var k in window._runtime._newViewOnResume){
-	   		 		var v = new View().getWebviewById(window._runtime._newViewOnResume[k]);	
+	   		 	for(var k in window._runtime.newViewOnResume){
+	   		 		var v = new View().getWebviewById(window._runtime.newViewOnResume[k]);	
 					v.close();
 	   		 	}  
-	   		 	window._runtime._newViewOnResume = [];   		 			
+	   		 	window._runtime.newViewOnResume = [];   		 			
    		 	},0);
    		 	
    		 }, 		 
@@ -167,28 +172,39 @@
 			if(page.onClose){
 				page.onClose();
 			}	
-   		 	for(var k in window._runtime._newViewOnCreate){
-   		 		var v = new View().getWebviewById(window._runtime._newViewOnCreate[k]);	
+   		 	for(var k in window._runtime.newViewOnCreate){
+   		 		var v = new View().getWebviewById(window._runtime.newViewOnCreate[k]);	
 				v.close();
    		 	}	
-   		 	window._runtime._newViewOnCreate = [];
-   		 	for(var k in window._runtime._newViewOnResume){
-   		 		var v = new View().getWebviewById(window._runtime._newViewOnResume[k]);	
+   		 	window._runtime.newViewOnCreate = [];
+   		 	for(var k in window._runtime.newViewOnResume){
+   		 		var v = new View().getWebviewById(window._runtime.newViewOnResume[k]);	
 				v.close();
    		 	}  	
-   		 	window._runtime._newViewOnResume = [];
+   		 	window._runtime.newViewOnResume = [];
    		 	console.log("close webview:"+that.currentView._view.id);
    		 	//that.currentView._view.close();  //TODO 关闭会会造成整个程序退出
+   		 },
+   		 /*可继承，参照android native的onActivityResult*/
+   		 onActivityResult:function(requestCode, resultCode,extra){
+   		 	var that = this;
+   		 	T.l("onActivityResult:"+requestCode+","+resultCode+","+JSON.stringify(extra));
+   		 	if(page.onActivityResult){
+   		 		page.onActivityResult(requestCode, resultCode,extra);
+   		 	}
    		 },
  	}); 
  	window.startup = new startup();
  	window._runtime = {
- 		hasCallOnResume:false,
- 		hasCallOnJs:false,
- 		_newViewOnCreate:[],
- 		_newViewOnResume:[],
- 		_show_aniShow:"none",
- 		_show_duration:"0",
+   		ar_openerViewId:null,//用于startActivityForResult子窗口的记录父窗口的ID
+   		ar_requestCode:null,//用于startActivityForResult子窗口的requestCode 	 		
+ 		hasCallOnResume:false,//是否调用过onResume
+ 		hasCallOnJs:false,//是否调用过onJs
+ 		newViewOnCreate:[],//当前view中在create中创建的view
+ 		newViewOnResume:[],//当前view中在resume中创建的view
+ 		show_aniShow:"none",//当前画面进入的滑动方式
+ 		show_duration:"0",//当前画面进入的滑动时间
+	
  	};
  		
  	var startPage = function(){  
