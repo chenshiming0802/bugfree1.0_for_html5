@@ -55,9 +55,9 @@
 				window.tools.devError("setResut回调中，id为"+window._runtime.ar_openerViewId+"的webview为空，导致回调失败！");
 			}
 			if(that.parentView._view){
-				that.parentView.hide();
+				that.parentView.close();
 			}else{
-				that.currentView.hide();
+				that.currentView.close();
 			}
 			activity_result_parentview.evalJS(param);
 		},
@@ -273,7 +273,12 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 	    form_select_getText:function(obj){
 			var txt=obj.options[obj.options.selectedIndex].text;
 			return txt;    	
-	    }	    
+	    },
+	    /*json的深拷贝*/
+		json_clone:function (obj){
+	       var txt=JSON.stringify(obj);
+	       return JSON.parse(txt);
+		},	    
 	};
 	
 	
@@ -366,6 +371,11 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			var that = this;
 			that._view.remove(view._view);
 		},
+		/**
+		 * webview的生命周期是：create->resume---|
+		 *          destory<---close<---hide<---|
+		 * 由于当前画面是由父节点创建，因此销毁是也由父节点，当前节点最后只能执行close，close后的页面是需要重新加载html
+		 */ 
 		hide:function(aniShow,duration){
 			var that = this;
 			aniShow = aniShow || "slide-in-left";
@@ -377,10 +387,16 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 		},
 		close:function(aniShow,duration){
 			var that = this;
-			that.hide(aniShow,duration);
+			if(that._view.isVisible()){
+				that.hide(aniShow,duration);
+			}
 			that._view.evalJS("window.startup.onClose()");
 			
 			//that._view.close(); 有当前页面在js content中关闭
+		},
+		destory:function(){
+			var that = this;
+			that._view.evalJS("window.startup.onDestory()");
 		},
 		openerEvalJS:function(js){
 			var that = this;

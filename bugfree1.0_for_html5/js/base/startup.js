@@ -6,10 +6,11 @@
  
  	var startup = function (){};
  	T.extend(startup.prototype, page ,{
- 		isPause:false,
- 		resumeExtra:null,
- 		hasCallOnResume:false,
- 		resultOnCreate:false,
+ 		
+ 		 resumeExtra:null,
+ 		//hasCallOnResume:false,
+ 		//resultOnCreate:false,
+ 		 viewUrl:null,//当前页面的url
  		 /*可继承 参照android activity#onCreate*/
  		 onCreate:function(){ 
  		 	T.l("onCreate-"+plus.webview.currentWebview().id);
@@ -23,15 +24,17 @@
  		 	page.parentView = new View().setView(plus.webview.currentWebview().parent());
  		 	that.parentView = page.parentView; 
  
+ 			that.viewUrl = that.currentView._view.getURL();
+
  		 	page.onCreate();
  		 	//that.resultOnCreate = page.onCreate();
  		 	
- 		 	that.onResume();//TODO for debug
+ 		 	//that.onResume();//TODO for debug
  		 }, 
  		 /*除了第一个页面外，该方法指在onPause后执行onResume动作，由于所有页面都会被调用onPauseResume，因此不建议使用*/
    		 onPauseResume:function(){
    		 	var that = this;
-   		 	if(that.hasCallOnResume===true){
+   		 	if(window._runtime.hasCallOnResume===true){
     		 	T.l("onPauseResume");
 		 		if(page.onPauseResume){ 
 					page.onPauseResume();
@@ -55,11 +58,11 @@
  		 	
  		 	window._runtime.hasCallOnResume = true;
  		 	
- 		 	that.hasCallOnResume = true;
+// 		 	that.hasCallOnResume = true;
  		 	/*如果是pause后再resume，则数据缓存中*/
- 		 	if(that.isPause===true){ 
+ 		 	if(window._runtime.isPause===true){ 
  		 		extra = that.resumeExtra;
- 		 		that.isPause = false;
+ 		 		window._runtime.isPause = false;
  		 	}  
  		 	that.resumeExtra = extra;
  		 	var resultResume = page.onResume(that.resumeExtra || {});//由webvice的show调用来，来代理调用page的resume	 
@@ -75,16 +78,16 @@
  		 	}
 
  		 },
- 		 /*可继承 用户清空UI上的数据，以便该view可服用*/
- 		 unResume:function(){
- 		 	T.l("unResume");	 
- 		 	var that = this;
- 		 	window._runtime.hasCallOnResume = false;
- 		 	console.log(window._runtime);
-			if(page.unResume){
-				page.unResume();
-			}	 	
- 		 },
+// 		 /*可继承 用户清空UI上的数据，以便该view可服用*/
+// 		 unResume:function(){
+// 		 	T.l("unResume");	 
+// 		 	var that = this;
+// 		 	window._runtime.hasCallOnResume = false;
+// 		 	console.log(window._runtime);
+//			if(page.unResume){
+//				page.unResume();
+//			}	 	
+// 		 },
  		 /*可继承 设置全局的JS，与onResume的数据无关*/
  		 onJs:function(){
  		 	T.l("onJs");
@@ -94,7 +97,7 @@
  		 onPause:function(){
  		 	T.l("onPause");	 
  		 	var that = this;
- 		 	that.isPause = true; 
+ 		 	window._runtime.isPause = true; 
 			if(page.onPause){
 				page.onPause();
 			}
@@ -117,7 +120,7 @@
  		 			//that.currentView.openerEvalJS("window.startup.onAndroidBack();");
  		 			that.parentView.evalJS("window.startup.onAndroidBack();");
  		 		}else if(that.openerView){
- 		 			page.currentView.hide(); 	
+ 		 			page.currentView.close(); 	
  		 		}else{
  		 			plus.nativeUI.toast("当前为最后一页，不能后退了！");
  		 		}
@@ -148,21 +151,21 @@
    		 		case "pop-out": show_aniShow="pop-in";break;
    		 	}
    		 	that.currentView._view.hide(show_aniShow,window._runtime.show_duration);
-   		 	if(window._runtime.hasCallOnResume===true){
-   		 		that.unResume();//如果执行过resume，则调用unResume
-   		 	}
-   		 	
-   		 	setTimeout(function(){
-	   		 	for(var k in window._runtime.newViewOnCreate){
-	   		 		var v = new View().getWebviewById(window._runtime.newViewOnCreate[k]);	
-					v.hide();
-	   		 	}	
-	   		 	for(var k in window._runtime.newViewOnResume){
-	   		 		var v = new View().getWebviewById(window._runtime.newViewOnResume[k]);	
-					v.close();
-	   		 	}  
-	   		 	window._runtime.newViewOnResume = [];   		 			
-   		 	},0);
+// 		 	if(window._runtime.hasCallOnResume===true){
+// 		 		that.unResume();//如果执行过resume，则调用unResume
+// 		 	}
+// 		 	
+// 		 	setTimeout(function(){
+//	   		 	for(var k in window._runtime.newViewOnCreate){
+//	   		 		var v = new View().getWebviewById(window._runtime.newViewOnCreate[k]);	
+//					v.hide();
+//	   		 	}	
+//	   		 	for(var k in window._runtime.newViewOnResume){
+//	   		 		var v = new View().getWebviewById(window._runtime.newViewOnResume[k]);	
+//					v.close();
+//	   		 	}  
+//	   		 	window._runtime.newViewOnResume = [];   		 			
+// 		 	},0);
    		 	
    		 }, 		 
  		 /*可继承  android的关闭事件*/
@@ -172,18 +175,37 @@
 			if(page.onClose){
 				page.onClose();
 			}	
-   		 	for(var k in window._runtime.newViewOnCreate){
-   		 		var v = new View().getWebviewById(window._runtime.newViewOnCreate[k]);	
-				v.close();
-   		 	}	
-   		 	window._runtime.newViewOnCreate = [];
-   		 	for(var k in window._runtime.newViewOnResume){
-   		 		var v = new View().getWebviewById(window._runtime.newViewOnResume[k]);	
-				v.close();
-   		 	}  	
-   		 	window._runtime.newViewOnResume = [];
-   		 	console.log("close webview:"+that.currentView._view.id);
-   		 	//that.currentView._view.close();  //TODO 关闭会会造成整个程序退出
+			setTimeout(function(){
+				T.l(JSON.stringify(window._runtime));
+	   		 	for(var k in window._runtime.newViewOnCreate){
+	   		 		var v = new View().getWebviewById(window._runtime.newViewOnCreate[k]);	
+					v.close();v.destory();
+	   		 	}	
+	   		 	window._runtime.newViewOnCreate = [];
+	   		 	for(var k in window._runtime.newViewOnResume){
+	   		 		var v = new View().getWebviewById(window._runtime.newViewOnResume[k]);	
+					v.close();v.destory();
+	   		 	}  	
+	   		 	window._runtime.newViewOnResume = [];
+	   		 	//还原当前webview
+	   		 	window._runtime = T.json_clone(window._runtime_origal);
+	   		 	that.currentView._view.clear();
+	   		 	console.log("that.viewUrl-"+that.viewUrl);
+	 			that.currentView._view.loadURL(that.viewUrl);
+	 			//that.onCreate();  //需确认重新loadurl后是否会覆盖dom内存				
+			},0);
+   		 },
+   		 /*通常不继承*/
+   		 onDestory:function(){
+		 	var that = this;
+   		 	T.l("onDestory");	 	
+			if(page.onDestory){
+				page.onDestory();
+			}	
+			setTimeout(function(){
+				console.log("destory webview:"+that.currentView._view.id);
+				that.currentView._view.close(); 				
+			},2000);
    		 },
    		 /*可继承，参照android native的onActivityResult*/
    		 onActivityResult:function(requestCode, resultCode,extra){
@@ -204,8 +226,11 @@
  		newViewOnResume:[],//当前view中在resume中创建的view
  		show_aniShow:"none",//当前画面进入的滑动方式
  		show_duration:"0",//当前画面进入的滑动时间
-	
+ 		isPause:false,
+ 
  	};
+ 	//保留_runtime的副本
+ 	window._runtime_origal = T.json_clone(window._runtime);
  		
  	var startPage = function(){  
  		window.startup.onCreate();   

@@ -22,9 +22,9 @@
 			return true;
 
 		}, 
-		unResume:function(){
-			var that = this , doc = document;
-		},		
+//		unResume:function(){
+//			var that = this , doc = document;
+//		},		
 		onJs:function(){    
 			var that = this,doc = document;
 			T.on("change",that.queryString,function(e){

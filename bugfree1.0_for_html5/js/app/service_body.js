@@ -35,11 +35,11 @@
 			);
 			return true;
 		}, 
-		unResume:function(){
-			var that = this , doc = document;
-			doc.getElementById("data_div").innerHTML = "" ;
-			doc.getElementById("data_ul").innerHTML = "" ;
-		},
+//		unResume:function(){
+//			var that = this , doc = document;
+//			doc.getElementById("data_div").innerHTML = "" ;
+//			doc.getElementById("data_ul").innerHTML = "" ;
+//		},
 		onJs:function(){ 
 		 
 		}, 

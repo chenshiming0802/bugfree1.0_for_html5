@@ -19,9 +19,9 @@
 			return true;
 
 		}, 
-		unResume:function(){
-			var that = this , doc = document;
-		},		
+//		unResume:function(){
+//			var that = this , doc = document;
+//		},		
 		onJs:function(){    
 			var that = this,doc = document;
 			
