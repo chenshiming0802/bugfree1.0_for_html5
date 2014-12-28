@@ -5,18 +5,24 @@
 	T.extend(page.prototype,B,{
 		onCreate:function(){  
 			var that = this , doc = document;
+			that.nav = doc.getElementById("nav");
+			that.editView = T.createView("service_edit.html","service_edit",{top:"30%",bottom:"0px"},{});
+			
  			return true;
 		}, 
 		onResume:function(extra){  
 			var that = this , doc = document;
 			that.bugId = extra.bugId;
+			that.bugModel = null;
 			T.l("  getRemoteJsonByProxy");
 			Mod.getRemoteJsonByProxy("buginfo2.php",  
 				{
 					"bugId":that.bugId,  
 				},
 				function(data){
-	 
+	 				that.bugModel = data;
+	 				
+	 				
 					var source = doc.getElementById("template_div").innerHTML;
 					var template = Handlebars.compile(source);				 	
 					var result = template(data);  
@@ -41,7 +47,25 @@
 //			doc.getElementById("data_ul").innerHTML = "" ;
 //		},
 		onJs:function(){ 
-		 
+			var that = this , doc = document;
+ 
+			T.on("tap",that.nav,function(e){
+				var pObj = T.getParentArticle(e.target,"A");
+				var pId = pObj.getAttribute("id");
+				switch(pId){
+					case "editBt":	
+						that.editView.show(that.bugModel,'slide-in-bottom');
+						break;
+					case "uploadBt":
+						alert("updateBt");
+						//TODO code 上传
+						break;
+					case "fixBt":
+						alert("fixBt");
+						//TODO code 解决
+						break;							
+				}
+			});		 
 		}, 
 		/*子窗口的返回事件传递给父窗口*/ //TODO 子窗口的后腿
 //		onAndroidBack:function(){
@@ -54,27 +78,7 @@
 		openerBodyUrl:"service_body.html",
 		onOpenerJs_static:function(openerPage,openExtra){
 			var that = openerPage,doc = document;
-	 		var sty = {top:"30%",bottom:"0px"};
-	 		var editView = T.createView("service_edit.html","service_edit",sty,{});
-	 	
-			var obj = doc.getElementById("nav");
-			T.on("tap",obj,function(e){
-				var pObj = T.getParentArticle(e.target,"A");
-				var pId = pObj.getAttribute("id");
-				switch(pId){
-					case "editBt":			
-						editView.show('slide-in-bottom', 150);
-						break;
-					case "uploadBt":
-						alert("updateBt");
-						//TODO code 上传
-						break;
-					case "fixBt":
-						alert("fixBt");
-						//TODO code 解决
-						break;							
-				}
-			});
+
 			
 		},
 		 

@@ -15,7 +15,18 @@
 		}, 
 		onResume:function(extra){    
 			var that = this , doc = document;
-			//that.isAssignMe = extra.isAssignMe||"0"; 
+			//that.isAssignMe = extra.isAssignMe||"0";
+
+			
+//			Mod.getRemoteJsonByProxy("queryUsers2.php",
+//				{
+//					"pageIndex":"1",
+//					"pageSize":"20",
+//					"queryString":that.queryString.value,
+//					"type":"user",
+//				},
+//				callback
+//			);	
 			return true;
 
 		}, 

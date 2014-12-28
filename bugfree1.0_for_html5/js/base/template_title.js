@@ -15,7 +15,7 @@
 			//TODO 需要将48修改掉
 			var viewName = that.currentView.id+"_body";
 			console.log("bodyUrl-"+viewName+":"+page.openerBodyUrl);
- 			that.bodyView = T.createView(page.openerBodyUrl,viewName,{top:"48px",bottom:"48px"},[]);
+ 			that.bodyView = T.createView(page.openerBodyUrl,viewName,{top:"48px",bottom:"0px"},[]);
  			that.currentView.append(that.bodyView);
  			return true;
 		}, 
