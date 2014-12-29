@@ -19,8 +19,15 @@
 			that.isAssignMe = extra.isAssignMe||"0"; 
 			that.isMeCreate = extra.isMeCreate||"0"; 
 			that.queryString = extra.queryString||""; 
-			
+
+			that._renderData(1,function(data){					 	
+				var result = that.template(data);  
+				that.data_ul.innerHTML = result ;		
+				that.currentIndex = 1;
+			});	
 			that.setPullRefresh("pullrefresh",that.onPullRefresh,that.onPullLoadMore);
+			
+			//that.onPullLoadMore();
 			return true;	
 		},
 		onJs:function(){    
@@ -57,6 +64,8 @@
 				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
 				mui('#pullrefresh').pullRefresh().refresh(true);
 				that.currentIndex = 1;
+				
+				plus.nativeUI.toast("最新数据加载完成！");
 			});	
 		},
 		/*下拉读取更多*/
@@ -73,6 +82,10 @@
 				mui('#pullrefresh').pullRefresh().endPullupToRefresh(flag); 
 			});				
 		}, 
+		refresh:function(){
+			var that = this;
+			that.onPullRefresh();
+		}
 		 
 	});  
 	

@@ -52,14 +52,15 @@
 					action:"Edited",
 				};
 				console.log("update:"+JSON.stringify(model));
-				
-				Mod.getRemoteJsonByProxy("updateBug2.php",model,function(){
-						plus.nativeUI.toast("更新 "+that.bugId+" 成功！");
-						this.openerView.evalJS("window.startup.resume();");
-						this.currentView.close();
-						
+
+				Mod.getRemoteJsonByProxy("updateBug2.php",model,
+					function(){
+						plus.nativeUI.toast("更新  ["+that.bugId+"] 成功！");
+						that.currentView.close();
+						//that.openerView.evalJS("window.page.refresh();");
+						that.setResut("0",{});
 					}
-				);					
+				);				
 			});
 			T.on("tap",that.cancelBt,function(e){
 				that.currentView.hide();

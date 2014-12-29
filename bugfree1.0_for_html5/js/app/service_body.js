@@ -14,6 +14,11 @@
 			var that = this , doc = document;
 			that.bugId = extra.bugId;
 			that.bugModel = null;
+			that._loadData();
+			return true;
+		}, 
+		_loadData:function(){
+			var that = this , doc=document;
 			T.l("  getRemoteJsonByProxy");
 			Mod.getRemoteJsonByProxy("buginfo2.php",  
 				{
@@ -21,7 +26,8 @@
 				},
 				function(data){
 	 				that.bugModel = data;
-	 				
+	 				doc.getElementById("data_div").innerHTML = "" ;
+	 				doc.getElementById("data_ul").innerHTML = "" ;
 	 				
 					var source = doc.getElementById("template_div").innerHTML;
 					var template = Handlebars.compile(source);				 	
@@ -38,9 +44,8 @@
 					var result = template(data);  
 					doc.getElementById("data_ul").innerHTML += result ;
 				}
-			);
-			return true;
-		}, 
+			);			
+		},
 //		unResume:function(){
 //			var that = this , doc = document;
 //			doc.getElementById("data_div").innerHTML = "" ;
@@ -54,6 +59,7 @@
 				var pId = pObj.getAttribute("id");
 				switch(pId){
 					case "editBt":	
+						that.startActivityForResult(that.editView,"editView");
 						that.editView.show(that.bugModel,'slide-in-bottom');
 						break;
 					case "uploadBt":
@@ -73,13 +79,24 @@
 //			that.currentView.openerEvalJS("window.startup.onAndroidBack();");
 //		},
 		onActivityResult:function(requestCode, resultCode,extra){
-			console.log("xxxx");
+			var that = this;
+			switch(requestCode){
+				case "editView":
+				if(resultCode=="0"){
+					that.refresh();
+				}
+				break;
+			}
 		},
 		openerBodyUrl:"service_body.html",
 		onOpenerJs_static:function(openerPage,openExtra){
 			var that = openerPage,doc = document;
 
-			
+		},
+		refresh:function(){
+			T.l("refresh");
+			var that = this;
+			that._loadData();
 		},
 		 
 	});  

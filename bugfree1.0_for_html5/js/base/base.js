@@ -10,6 +10,7 @@
 		},	 
 		setPullRefresh:function(id,pullDownF,pullUpF){
 			var config = {
+				//swipeBack: false,  ////禁用右滑关闭功能
 				pullRefresh: {
 					container: '#'+id,
 					down: {
@@ -374,6 +375,7 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 		/**
 		 * webview的生命周期是：create->resume---|
 		 *          destory<---close<---hide<---|
+		 * close状态是指view只运行了onCreate操作，通过执行show或者resume激活
 		 * 由于当前画面是由父节点创建，因此销毁是也由父节点，当前节点最后只能执行close，close后的页面是需要重新加载html
 		 */ 
 		hide:function(aniShow,duration){
@@ -398,6 +400,11 @@ String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
 			var that = this;
 			that._view.evalJS("window.startup.onDestory()");
 		},
+//		refresh:function(){
+//			var that = this;
+//			that._view.evalJS("window.startup.onRefresh()");
+//			console.log("window.startup.onRefresh()");
+//		},
 		openerEvalJS:function(js){
 			var that = this;
 			that._view.opener().evalJS(js);

@@ -3,7 +3,6 @@
 	 
 	var page = function (){};
 	T.extend(page.prototype,B,{
-		_currentBodyView:null,
 		_currentNavName:null,
 		_currentChildView:null,
 		onCreate:function(){  
@@ -11,8 +10,12 @@
  
 			that.nav = doc.getElementById("nav");
 			that.headerTitle = doc.getElementById("headerTitle");
-			
-			that.currentView.evalJS("window.startup.onResume([])");//第一个页面，需要手动触发resume动作
+			that.refreshBtn = doc.getElementById("refreshBtn");
+			that.searchBtn = doc.getElementById("searchBtn");
+
+			//that.currentView.evalJS("window.startup.onResume({})");//第一个页面，需要手动触发resume动作
+ 			window.startup.onResume({});
+ 			
  			return true;
 		},
 		onResume:function(extra){   
@@ -23,10 +26,14 @@
 				that._logout();
 				return false;
 			}	
+			
+						
+			that._currentNavName = "assignme";
 
 			var sty = {top:"48px",bottom:"48px"};
 			that.assignmeView = T.createView("index_assignme.html","assignme",sty,{});
 			that._showView("assignme");
+			that._currentChildView = that.assignmeView;
 			return true;
 		},  
 		onJs:function(){  
@@ -34,12 +41,25 @@
 			var sty = {top:"48px",bottom:"48px"};
 			that.mecreateView = T.createView("index_assignme.html","mecreate",sty,{});
 			
+			T.on("tap",that.refreshBtn,function(e){
+				switch(that._currentNavName){
+					case "assignme":
+					case "mecreate":
+						that._currentChildView.evalJS("window.startup.refresh();");
+						break;
+				}				
+			});
+			
+			T.on("tap",that.searchBtn,function(e){
+				//TODO search
+			});
+			
 			/*绑定nav的按钮事件*/
 			T.on("tap",that.nav,function(e){
 				var obj = T.getParentArticle(e.target,"A");
 				if(!obj || !obj.id)	return;				
 				if(that._currentNavName && that._currentNavName==obj.id) return; //如果重复点击同一个nav item，则请求不处理
-
+				that._currentNavName = obj.id;
 				T.l("tap nav:"+obj.id);
 				
 				switch(obj.id){
@@ -68,7 +88,7 @@
 					extra = {isMeCreate:"1"};				 				
 					break;
 			}
-			if(that._currentChildView) that._currentChildView.hide("none");
+			if(that._currentChildView) that._currentChildView.close("none");//第一次进入时，childview为空
 			
 			that.currentView.append(v);	
 			
@@ -95,7 +115,7 @@
 			Mod.clearUserSession();		
 			
 			var v = T.createView("login.html","login",{},{},false);
-			v.show([]);		
+			v.show({});		
 			that.currentView.hide();
 		}
 	});  

@@ -10,7 +10,8 @@
 	page.openerBodyUrl = bodyPage.openerBodyUrl;
 	T.extend(page.prototype,B,{
 		onCreate:function(){  
-			var that = this;
+			var that = this,doc = document;
+			that.titleBackBtn = doc.getElementById("titleBackBtn");
 			
 			//TODO 需要将48修改掉
 			var viewName = that.currentView.id+"_body";
@@ -27,6 +28,10 @@
 		onJs:function(){ 
 			var that = this;
 			page.onOpenerJs_static(that,that.extra);
+			
+			T.on("tap",that.titleBackBtn,function(e){
+				window.startup.onAndroidBack();
+			});
 		}, 		
  
 	}); 

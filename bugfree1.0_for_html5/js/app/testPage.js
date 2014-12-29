@@ -27,6 +27,8 @@
 //				},
 //				callback
 //			);	
+
+//			that.setResut("0",extra);
 			return true;
 
 		}, 
@@ -42,7 +44,14 @@
 		openerBodyUrl:"",
 		onOpenerJs_static:function(openerPage,openExtra){
 			var that = openerPage,doc = document;
-		}
+		},
+		onActivityResult:function(requestCode, resultCode,extra){
+			var that = this;
+			switch(requestCode){
+				case "":
+				break;
+			}
+		},		
 	});  
 	
 	window.page = new page();

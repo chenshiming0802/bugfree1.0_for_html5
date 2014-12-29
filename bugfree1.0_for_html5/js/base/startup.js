@@ -15,7 +15,8 @@
  		 onCreate:function(){ 
  		 	T.l("onCreate-"+plus.webview.currentWebview().id);
  		 	var that = this;
-
+ 
+	
  		 	that.baseinit();
  		 	page.currentView = new View().setView(plus.webview.currentWebview());
  		 	that.currentView = page.currentView;
@@ -41,6 +42,15 @@
 				}	  		 		
    		 	}
    		 },
+// 		 onRefresh:function(){
+// 		 	var that = this;
+// 		 	T.l("onRefresh2:"+JSON.stringify(that.resumeExtra));
+//	   		that.currentView._view.clear();
+//	   		console.log("that.viewUrl2-"+that.viewUrl);
+//	 		that.currentView._view.loadURL(that.viewUrl);  
+// 
+// 		 	//that.onResume(that.resumeExtra || {});
+// 		 },
  		 /*可继承 参照android activity#onResume*/
  		 onResume:function(extra){ 
  		 	T.l("onResume:"+JSON.stringify(extra));
@@ -74,7 +84,7 @@
 	 		 			window._runtime.hasCallOnJs = true;
 	 		 			that.onJs();   		 			
 	 		 		}	 		 		
-	 		 	},1000);			 		
+	 		 	},2000);			 		
  		 	}
 
  		 },
@@ -216,6 +226,9 @@
    		 	}
    		 },
  	}); 
+ 	
+
+			
  	window.startup = new startup();
  	window._runtime = {
    		ar_openerViewId:null,//用于startActivityForResult子窗口的记录父窗口的ID
@@ -227,7 +240,6 @@
  		show_aniShow:"none",//当前画面进入的滑动方式
  		show_duration:"0",//当前画面进入的滑动时间
  		isPause:false,
- 
  	};
  	//保留_runtime的副本
  	window._runtime_origal = T.json_clone(window._runtime);
